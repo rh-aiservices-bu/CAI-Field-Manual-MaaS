@@ -6,7 +6,7 @@ Working list of pending work for this repo. New items go at the bottom of their 
 
 | # | Item | Status | Notes |
 |---|------|--------|-------|
-| 1 | Commit rename + RH CAI lockup changes; push to renamed repo | pending | baseURL/github_repo → CAI-Field-Manual-prototype; assets/icons/logo-rh-cai.svg + assets/scss/main.scss; gate clean |
+| 1 | Commit rename + RH CAI lockup changes; push to renamed repo | pending | baseURL/github_repo → CAI-Field-Manual-prototype; field-guides → field-manual rename everywhere (dir, docs_section, LLMSFULL path, copy); assets/icons/logo-rh-cai.svg; gate clean |
 
 ## Next
 

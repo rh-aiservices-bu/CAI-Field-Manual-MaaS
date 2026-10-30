@@ -2,7 +2,7 @@ Rendered site: https://rh-aiservices-bu.github.io/CAI-Field-Manual-prototype/
 
 # CAI Field Manual
 
-The CAI Field Manual is a working example of what future field guides should
+The CAI Field Manual is a working example of what future field manuals should
 look like: chronological field-work notes — set up → operate → things that
 broke — where every command is followed by a verify step with literal expected
 output, and known issues are documented where the reader hits them. It
@@ -15,22 +15,22 @@ theme (`github.com/pgsty/oink`).
 
 ## How to consume it
 
-Start at [Field Guides](https://rh-aiservices-bu.github.io/CAI-Field-Manual-prototype/field-guides/) —
-the first guide is the [Hello World Field Guide](https://rh-aiservices-bu.github.io/CAI-Field-Manual-prototype/field-guides/hello-world/).
+Start at [Field Manual](https://rh-aiservices-bu.github.io/CAI-Field-Manual-prototype/field-manual/) —
+the first manual is the [Hello World Field Manual](https://rh-aiservices-bu.github.io/CAI-Field-Manual-prototype/field-manual/hello-world/).
 
 **Humans** — read the rendered HTML:
 
-- The selector at the top of every guide (RHAIE version: 3.4 / 3.5 / 3.6;
+- The selector at the top of every manual (RHAIE version: 3.4 / 3.5 / 3.6;
   ops mode: GitOps / Manual / Scripted — each with *Show all*) filters
   content; the selected pill is clearly highlighted, and a status line
   beneath the pills restates the current view as a sentence, e.g. *Showing
   RHAIE 3.6, GitOps steps — reading as guest on
   api.ocp.abcd.sandbox1234.opentlc.com*; the choice persists in
   `localStorage` across pages, visits, and tabs.
-- The **Customize this!** page (bottom of the guide nav) sets every choice
+- The **Customize this!** page (bottom of the manual nav) sets every choice
   in one place: RHAIE version, ops mode, your name (default `guest`), and
   your cluster (default `.ocp.abcd.sandbox1234.opentlc.com`). The name and
-  cluster substitute into every `customize` token across the guides.
+  cluster substitute into every `customize` token across the manuals.
 - Search with `/` or the navbar search box (`offline_search`).
 - Each section also renders a print bundle for offline/print reading.
 
@@ -50,8 +50,8 @@ the first guide is the [Hello World Field Guide](https://rh-aiservices-bu.github
   with the page URL (or the `content/` path) and what you hit.
   *(Labels and triage conventions TBD for now.)*
 - **Changes** — PRs to `main` are welcome. Content lives in
-  `content/field-guides/<guide>/`; start a new guide by duplicating the blank
-  skeleton in `content/field-guides/hello-world/`. Run the publication gate
+  `content/field-manual/<manual>/`; start a new manual by duplicating the blank
+  skeleton in `content/field-manual/hello-world/`. Run the publication gate
   (below) before opening a PR. Merges to `main` deploy automatically via
   GitHub Actions; repo Settings → Pages → Source must be **GitHub Actions**
   (one-time admin step).
@@ -62,12 +62,12 @@ Where things live:
   slice with per-axis `neutral` (show-all) and `default`, plus optional
   `status.specific` / `status.neutral` phrases for the selector's status
   line (`{value}` = the option label) — customize fields (user, cluster),
-  `docs_section: field-guides` (drives the llms.txt Documentation index and
+  `docs_section: field-manual` (drives the llms.txt Documentation index and
   the docs-sidebar fallback), `docs_sidebar_root: home` (left nav roots at
   the whole site tree), GA4 placeholder
 - `data/home.yaml` — landing page sections (hero, cards, cta)
 - `content/_index.md` — home page front matter
-- `content/field-guides/` — the guides; `hello-world/` doubles as the blank
+- `content/field-manual/` — the manuals; `hello-world/` doubles as the blank
   skeleton to duplicate
 - `content/why-this-approach.md` — design rationale (what the prototype
   copies from the MaaS guide, changes, and why)
@@ -96,7 +96,7 @@ regenerate.
 ## Disclaimers
 
 - **Orientation, not a support statement.** Commands and versions reflect
-  what worked during field work when the guide was written; verify against
+  what worked during field work when the manual was written; verify against
   the current official product documentation before relying on them.
 - **Not official product documentation.** These are field notes from
   prototypes, maintained by project contributors.

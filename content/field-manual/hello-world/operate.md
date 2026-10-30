@@ -27,4 +27,4 @@ oc get hello hello-world
 3. If not Ready, go to [Things that broke]({{< relref "things-that-broke" >}}).
 
 > [!TIP]
-> The selector at the top filters this guide: pick GitOps, Manual, or Scripted, and 3.4, 3.5, or 3.6 — the choice persists across pages and visits.
+> The selector at the top filters this manual: pick GitOps, Manual, or Scripted, and 3.4, 3.5, or 3.6 — the choice persists across pages and visits.

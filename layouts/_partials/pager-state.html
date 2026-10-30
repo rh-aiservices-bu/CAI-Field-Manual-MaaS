@@ -1,9 +1,9 @@
 {{- /* Pinned copy of oink v1.4.0 layouts/_partials/pager-state.html.
      The only change is the flatten root below: params.ui.docs_sidebar_root is
      `home` here, so the nav tree spans the whole site and the theme would page
-     straight out of a guide into the next top-level entry (guides → Chat →
+     straight out of a manual into the next top-level entry (manuals → Chat →
      Why this approach). Prev/next stays a reading chain inside the current
-     top-level section instead — the guide's own sequence — which is what the
+     top-level section instead — the manual's own sequence — which is what the
      pager meant before the tree was re-rooted. Re-diff on a theme bump. */ -}}
 {{- $page := . -}}
 {{- $format := lower ($page.Store.Get "tdOutputFormat" | default "html") -}}

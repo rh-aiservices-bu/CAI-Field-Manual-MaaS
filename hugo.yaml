@@ -14,7 +14,7 @@ languages:
     weight: 1
     title: CAI Field Manual
     params:
-      description: Documentation, updates, and guides for your project.
+      description: Documentation, updates, and manuals for your project.
   # Keep disabled languages declared so Hugo recognizes .zh.md and .fr.md as
   # translations instead of treating them as duplicate English pages.
   zh:
@@ -50,7 +50,7 @@ outputs:
   page: [HTML, markdown]
   # LLMSFULL is enabled per section in front matter: the theme emits it only
   # for a top-level section and warns for nested ones, so a site-wide section
-  # output trips /field-guides/hello-world/. content/field-guides/_index.md
+  # output trips /field-manual/hello-world/. content/field-manual/_index.md
   # opts in; the chat page reads that bundle as its whole-manual context.
   section: [HTML, RSS, print, markdown]
 
@@ -74,7 +74,7 @@ params:
     blog_index: cards
     sidebar_menu_foldable: true
     # Left nav shows the whole site tree from Home: the three top-level
-    # entries (field guides, chat, why this approach) each expand in place,
+    # entries (field manual, chat, why this approach) each expand in place,
     # instead of the root switcher swapping one section's tree at a time.
     docs_sidebar_root: home
     sidebar_root_menu: false
@@ -83,7 +83,7 @@ params:
     # `all`/`groups` would paint marks next to the numbers; marks stay in
     # landing cards, page headers, and the navbar.
     sidebar_icon_policy: none
-    docs_section: field-guides
+    docs_section: field-manual
     share: [claude, chatgpt, linkedin, email, copy]
     page_context_menu:
       assistant_links: true
@@ -121,14 +121,14 @@ params:
         - { id: scripted, label: Scripted }
   # Customize fields: text values the reader sets once on the "Customize
   # this!" page and that substitute into every `customize` shortcode token
-  # across the guides. Defaults are the shipped examples, not real values.
+  # across the manuals. Defaults are the shipped examples, not real values.
   customize:
     - { id: user, label: Your name, default: guest }
     - { id: cluster, label: Cluster, default: .ocp.abcd.sandbox1234.opentlc.com }
 
 # Site header navigation. oink renders .Site.Menus.main in the navbar center
 # zone and the home mobile drawer; the entry's page supplies the icon, and
-# llms.txt lists it under Site index. Field Guides stays reachable through the
+# llms.txt lists it under Site index. Field Manual stays reachable through the
 # landing cards and the sidebar, so Chat is the only entry for now.
 menus:
   main:

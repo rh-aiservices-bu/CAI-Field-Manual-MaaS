@@ -8,7 +8,7 @@ icon: fa-solid fa-play
 Every procedure leads with the outcome, states what must be true before starting, and closes with verification and rollback.
 
 {{< variant mode all >}}
-This guide's steps work the same in every ops mode — GitOps, Manual, and Scripted; the blocks below call out where they differ.
+This manual's steps work the same in every ops mode — GitOps, Manual, and Scripted; the blocks below call out where they differ.
 {{< /variant >}}
 
 ## Prerequisites

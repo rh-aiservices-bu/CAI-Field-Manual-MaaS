@@ -1,11 +1,11 @@
 ---
 title: Customize this!
-description: Set the choices this guide remembers — RHAIE version, ops mode, your name, your cluster.
+description: Set the choices this manual remembers — RHAIE version, ops mode, your name, your cluster.
 weight: 40
 icon: fa-solid fa-sliders
 ---
 
-Make this guide yours. Every choice below persists in `localStorage` across pages, visits, and tabs — set them once and every guide substitutes them everywhere.
+Make this manual yours. Every choice below persists in `localStorage` across pages, visits, and tabs — set them once and every manual substitutes them everywhere.
 
 {{< customize-form >}}
 

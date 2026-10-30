@@ -20,4 +20,4 @@ oc describe pod hello-world | grep -A3 "Last State"
 **Workaround.** Raise the memory limit in `manifests/hello-world/` and re-apply.
 
 > [!IMPORTANT]
-> When a real field guide ships, each known issue carries its tracker id (Jira/KCS) inline, like the MaaS guide's RHOAIENG blocks.
+> When a real field manual ships, each known issue carries its tracker id (Jira/KCS) inline, like the MaaS guide's RHOAIENG blocks.

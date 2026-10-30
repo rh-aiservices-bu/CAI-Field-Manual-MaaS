@@ -74,19 +74,19 @@ For each trait: **copy** (as-is), **change** (copy but differ — say how), or *
 
 | Trait | Stance | Your divergence (2026-10-30) |
 |---|---|---|
-| 1 Phase-first IA | change | Chronological page order inside each guide (setup → day-two ops → broke), not numbered deployment phases; each guide is its own section with its own left nav. |
-| 2 Status-gate discipline | copy | Every command in a field guide is followed by a verify command and literal expected output. |
+| 1 Phase-first IA | change | Chronological page order inside each manual (setup → day-two ops → broke), not numbered deployment phases; each manual is its own section with its own left nav. |
+| 2 Status-gate discipline | copy | Every command in a field manual is followed by a verify command and literal expected output. |
 | 3 Dual manual + automated path | change | Dual consumption = human HTML **and** AI-consumable markdown (`have Claude read this` deep link, copy-as-markdown, per-page `.md`, `llms.txt`) — not manual vs scripted installs. |
 | 4 Known issues inline + changelog | copy | Inline titled known-issue blocks; PR-linked changelog adopted. |
-| 5 Version honesty framing | change | Version divergence handled by a persistent selector at the top of every guide page (version + ops mode), remembered across pages via localStorage — not tabs, not site forks. |
+| 5 Version honesty framing | change | Version divergence handled by a persistent selector at the top of every manual page (version + ops mode), remembered across pages via localStorage — not tabs, not site forks. |
 | 6 Boilerplate repetition | change | Markdown over AsciiDoc; no verbatim per-page boilerplate — shared chrome (variant selector) lives at the top of the page. |
-| 7 Overview landing | change | Hero + cards landing listing all field guides as cards; phase tables with time estimates adopted when guides exist. |
+| 7 Overview landing | change | Hero + cards landing listing all field manuals as cards; phase tables with time estimates adopted when manuals exist. |
 | 8 AI-agent surface | copy | AI-agent affordances documented as a Tools page. |
 
 **Free-form divergences** — anything the MaaS guide doesn't do that you want here (decided 2026-10-30):
 - **Google Analytics 4** on the rendered pages (wired with placeholder measurement ID until a real one exists).
-- **Hello-world blank field guide** — the prototype ships a copyable blank guide skeleton in `content/field-guides/hello-world/`, demonstrating every convention (variant selector, customize page, chronological nav, verification, AI links) without real field content.
-- **Customize this! page** — one page sets every remembered choice (ops mode, guide version, reader name, cluster); the name and cluster substitute into `customize` tokens in every guide's commands.
+- **Hello-world blank field manual** — the prototype ships a copyable blank manual skeleton in `content/field-manual/hello-world/`, demonstrating every convention (variant selector, customize page, chronological nav, verification, AI links) without real field content.
+- **Customize this! page** — one page sets every remembered choice (ops mode, manual version, reader name, cluster); the name and cluster substitute into `customize` tokens in every manual's commands.
 ---
 
 *Scout evidence: 14 pages fetched across all nav groups, plus sitemap, 404, raw HTML head/nav, and changelog. Tooling verdict from `<meta name="generator" content="Antora 3.1.15">` and AsciiDoc markup signatures (`admonitionblock`, `sect1`, `#_` auto-ids).*

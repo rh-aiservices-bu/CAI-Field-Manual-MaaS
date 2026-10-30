@@ -8,29 +8,33 @@ hero:
     - words: [{ text: Where the work happens. }]
   lead: A working skeleton for the field-manual example site — playbooks, procedures, and reference material that survives field conditions.
   actions:
-    - { label: Open the field guide, url: field-guides/, icon: fa-solid fa-map, style: primary }
+    - { label: Open the field manual, url: field-manual/, icon: fa-solid fa-map, style: primary }
 
 cards:
   eyebrow: Structure
   title: What lives here
   columns: 2
   items:
-    - title: Field Guides
-      desc: Chronological guides — set up, operate, the things that broke — filtered by the selector (RHAIE version, ops mode) at the top of every guide.
+    - title: Field Manual
+      desc: Chronological manuals — set up, operate, the things that broke — filtered by the selector (RHAIE version, ops mode) at the top of every manual.
       icon: fa-solid fa-map
-      url: field-guides/
-    - title: Hello World guide
-      desc: "The blank field-guide skeleton: duplicate it and fill in your own field procedures."
+      url: field-manual/
+    - title: Hello World Field Manual
+      desc: "The blank field-manual skeleton: duplicate it and fill in your own field procedures."
       icon: fa-solid fa-seedling
-      url: field-guides/hello-world/
+      url: field-manual/hello-world/
     - title: Why this approach
       desc: "What the prototype copies from the MaaS guide, changes on purpose, and why — for the team walkthrough."
       icon: fa-solid fa-lightbulb
       url: why-this-approach/
     - title: Contribute
-      desc: "Edit guides under content/field-guides/ and the landing copy in data/home.yaml; the dev server hot-reloads."
+      desc: "Edit manuals under content/field-manual/ and the landing copy in data/home.yaml; the dev server hot-reloads."
       icon: fa-solid fa-pen-nib
-      url: field-guides/hello-world/set-up/
+      url: field-manual/hello-world/set-up/
+    - title: Potential improvements
+      desc: "What the field manual does not use yet — oink 1.4.0 capabilities left on the table, each illustrated on the page."
+      icon: fa-solid fa-arrow-up-right-dots
+      url: potential-improvements/
 
 cta:
   title: "We want your feedback."
