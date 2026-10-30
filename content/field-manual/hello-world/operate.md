@@ -28,3 +28,5 @@ oc get hello hello-world
 
 > [!TIP]
 > The selector at the top filters this manual: pick GitOps, Manual, or Scripted, and 3.4, 3.5, or 3.6 — the choice persists across pages and visits.
+
+Escalation criteria and the verify-command rule: [Conventions and intent]({{< relref "/writing-the-field-manual/conventions" >}}).

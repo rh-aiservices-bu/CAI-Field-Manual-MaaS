@@ -9,6 +9,7 @@ type: docs
 footer_style: slim
 ---
 This prototype is the example of what future field manuals should be. It emulates the [RHOAI MaaS guide](https://rh-aiservices-bu.github.io/rhoai-maas-guide/modules/main/index.html)'s high-level approach with deliberate divergences.
+For the author side — how to write a manual of this kind — see [Writing the field manual]({{< relref "/writing-the-field-manual" >}}).
 
 ## Copied from the MaaS guide
 

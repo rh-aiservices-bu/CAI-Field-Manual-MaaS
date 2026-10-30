@@ -9,7 +9,7 @@ cascade:
 ---
 
 A blank field manual. The left nav follows the field-work timeline:
-set up → operate → things that broke. The selector at the top filters RHAIE version and ops mode. Duplicate this section, retitle it, and fill in your own procedures.
+set up → operate → things that broke. The selector at the top filters RHAIE version and ops mode. Duplicate this section, retitle it, and fill in your own procedures. Walk through writing your own in [Write your first manual]({{< relref "/writing-the-field-manual/write-a-manual" >}}).
 
 - [Set up](set-up/)
 - [Operate](operate/)

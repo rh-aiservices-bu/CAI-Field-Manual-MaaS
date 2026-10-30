@@ -90,3 +90,5 @@ Run the rollback script:
 
 > [!WARNING]
 > Rollback mid-flight leaves the resource half-applied — re-run the procedure from step 1 after rollback.
+
+Why this shape? See [Conventions and intent]({{< relref "/writing-the-field-manual/conventions" >}}).

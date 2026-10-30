@@ -8,7 +8,7 @@ hero:
     - words: [{ text: Where the work happens. }]
   lead: A working skeleton for the field-manual example site — playbooks, procedures, and reference material that survives field conditions.
   actions:
-    - { label: Open the field manual, url: field-manual/, icon: fa-solid fa-map, style: primary }
+    - { label: Open the "hello world" of field manuals, url: field-manual/, icon: fa-solid fa-map, style: primary }
 
 cards:
   eyebrow: Structure
@@ -27,10 +27,14 @@ cards:
       desc: "What the prototype copies from the MaaS guide, changes on purpose, and why — for the team walkthrough."
       icon: fa-solid fa-lightbulb
       url: why-this-approach/
+    - title: Writing the field manual
+      desc: "The doctrine for authors — the six conventions behind every manual here, annotated examples, and the walkthrough for a first manual."
+      icon: fa-solid fa-pen-ruler
+      url: writing-the-field-manual/
     - title: Contribute
       desc: "Edit manuals under content/field-manual/ and the landing copy in data/home.yaml; the dev server hot-reloads."
       icon: fa-solid fa-pen-nib
-      url: field-manual/hello-world/set-up/
+      url: writing-the-field-manual/write-a-manual/
     - title: Potential improvements
       desc: "What the field manual does not use yet — oink 1.4.0 capabilities left on the table, each illustrated on the page."
       icon: fa-solid fa-arrow-up-right-dots

@@ -71,6 +71,9 @@ Where things live:
   skeleton to duplicate
 - `content/why-this-approach.md` — design rationale (what the prototype
   copies from the MaaS guide, changes, and why)
+- `content/writing-the-field-manual/` — the author doctrine section (how
+  to write a manual: the six conventions, annotated examples, and the
+  walkthrough for a first manual)
 - `layouts/_partials/google_analytics.html` — GA4 partial (the theme's
   head.html calls it in production)
 - `layouts/docs/baseof.html`, `layouts/_partials/shell/sidebar-tree.html`,
