@@ -78,10 +78,11 @@ params:
     # instead of the root switcher swapping one section's tree at a time.
     docs_sidebar_root: home
     sidebar_root_menu: false
-    # Three top-level entries now carry the site's structure, and every page
-    # declares an icon, so show them at every depth -- `groups` would leave
-    # the two leaf entries (Chat, Why this approach) without their marks.
-    sidebar_icon_policy: all
+    # Numbered workshop-chrome nav (B): CSS counters give the top level "N."
+    # and its children "N.M", so icon rows are gone from the tree --
+    # `all`/`groups` would paint marks next to the numbers; marks stay in
+    # landing cards, page headers, and the navbar.
+    sidebar_icon_policy: none
     docs_section: field-guides
     share: [claude, chatgpt, linkedin, email, copy]
     page_context_menu:

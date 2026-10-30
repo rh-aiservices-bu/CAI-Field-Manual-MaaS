@@ -174,3 +174,32 @@ code.td-customize-token {
   padding: 0;
   border-radius: 0;
 }
+// Numbered left nav: nested CSS counters give every tree row its position
+// ("1.", "1.1", "1.1.1", any depth) -- the workshop-chrome look chosen over
+// icon rows (params.ui.sidebar_icon_policy: none). Numbers are ::before
+// content: not in copied text, titles, or search. Each ul resets its own
+// counter, so nesting is the DOM's, not a hardcoded chain; the mobile-only
+// Home row (d-md-none) and divider heading rows are excluded from counting
+// so the drawer, desktop, and any future sidebar_divider agree on numbers.
+// Top-level rows render semibold like the example's chapter titles.
+#td-section-nav {
+  .td-shell-tree__list {
+    counter-reset: td-nav;
+  }
+
+  .td-shell-tree__item:not(.d-md-none):not(.td-shell-tree__heading) {
+    counter-increment: td-nav;
+
+    & > .td-shell-tree__row > .td-shell-tree__link > span::before {
+      content: counters(td-nav, ".") " ";
+    }
+  }
+
+  & > ul > .td-shell-tree__item:not(.d-md-none) > .td-shell-tree__row > .td-shell-tree__link {
+    font-weight: 600;
+  }
+
+  & > ul > .td-shell-tree__item:not(.d-md-none) > .td-shell-tree__row > .td-shell-tree__link > span::before {
+    font-weight: 600;
+  }
+}

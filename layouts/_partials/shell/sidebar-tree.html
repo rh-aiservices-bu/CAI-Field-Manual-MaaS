@@ -1,11 +1,14 @@
 {{/* Pinned copy of oink v1.4.0 layouts/_partials/shell/sidebar-tree.html.
-     The only change is the level-0 list body: when the navigation root is the
-     site Home (params.ui.docs_sidebar_root: home), the Home page is a cover,
-     not a menu entry, so its children render as the top level of the tree.
-     They keep ulNr 1 and the theme's level-1 list class, so foldable chevrons,
-     indentation, weight and the child list numbering are unchanged -- only the
-     redundant "site title" row above them disappears. Re-diff against the
-     theme file on a theme bump. */ -}}
+     Two changes from the theme file: (1) the level-0 list body -- when the
+     navigation root is the site Home (params.ui.docs_sidebar_root: home),
+     the Home page is a cover, not a menu entry, so its children render as
+     the top level of the tree; they keep ulNr 1 and the theme's level-1
+     list class, and the Home row survives on small screens only (d-md-none)
+     so the drawer keeps its way back to the landing page. (2) the mobile
+     Home row renders no icon -- the numbered workshop-chrome nav
+     (params.ui.sidebar_icon_policy: none + CSS counters in
+     assets/scss/_styles_project.scss) keeps the tree mark-free.
+     Re-diff against the theme file on a theme bump. */ -}}
 {{ $context := .context -}}
 {{ $sidebarRoot := .sidebarRoot -}}
 {{ $sidebarRootID := .sidebarRootID -}}
@@ -44,7 +47,7 @@
       <li class="td-shell-tree__item td-leaf d-md-none">
         <div class="td-shell-tree__row">
           <a href="{{ $navRoot.RelPermalink }}" class="td-shell-tree__link">
-            <i class="fa-solid fa-house" aria-hidden="true"></i><span>{{ $navRoot.LinkTitle }}</span>
+            <span>{{ $navRoot.LinkTitle }}</span>
           </a>
         </div>
       </li>
