@@ -41,10 +41,14 @@ No output = clean. Revisit when the theme moves to the Dart Sass transpiler.
 ## Structure
 
 - `hugo.yaml` — site config (single-language profile from the oink-starter)
-- `data/home/en.yaml` — landing page sections (hero, cards, cta)
+- `data/home.yaml` — landing page sections (hero, cards, cta)
 - `content/_index.md` — home page front matter
 - `content/docs/` — the manual; `content/docs/sample.md` is the exemplar page to duplicate
 - `.github/workflows/github-pages.yaml` — deploy workflow (GitHub Pages via Actions)
+
+The project root stays minimal: the theme module supplies the navbar logo and
+favicon (`assets/icons/logo.svg`, `static/favicon.svg`), and build outputs
+(`public/`, `resources/`) are gitignored and regenerate.
 
 ## Deployment
 
