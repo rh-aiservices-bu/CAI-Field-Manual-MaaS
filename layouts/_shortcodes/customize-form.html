@@ -6,10 +6,10 @@
      the text inputs read and write the same localStorage keys the
      pre-paint bootstrap (hooks/head-end.html) and the token runtime use.
 
-     Variant buttons: clicking one sets the <html> attribute (CSS does the
-     content filtering), persists to 'td-variant:v1:<axis>', and mirrors
-     every other button group on the page — including the page-top
-     selector's, via the shared td-variant change event.
+    Variant buttons: clicking one sets the <html> attribute (CSS does the
+    content filtering), persists to 'td-variant:v1:<axis>', and mirrors
+    every other button group on the page — including the page-top
+    selector's, since mirrorVariant() walks the whole document.
 
      Text fields: typing updates 'td-customize:v1:<id>' (debounced), the
      <html> data-td-customize-<id> attribute, and every token on every

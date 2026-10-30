@@ -3,8 +3,6 @@ title: Hello World Field Guide
 description: A blank field guide — duplicate this section and fill in your own field procedures.
 weight: 10
 icon: fa-solid fa-seedling
-sidebar_root_for: self
-sidebar_root_link_self: true
 cascade:
   type: docs
   footer_style: slim

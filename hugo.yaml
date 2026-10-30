@@ -73,7 +73,15 @@ params:
     section_index: cards
     blog_index: cards
     sidebar_menu_foldable: true
-    sidebar_icon_policy: groups
+    # Left nav shows the whole site tree from Home: the three top-level
+    # entries (field guides, chat, why this approach) each expand in place,
+    # instead of the root switcher swapping one section's tree at a time.
+    docs_sidebar_root: home
+    sidebar_root_menu: false
+    # Three top-level entries now carry the site's structure, and every page
+    # declares an icon, so show them at every depth -- `groups` would leave
+    # the two leaf entries (Chat, Why this approach) without their marks.
+    sidebar_icon_policy: all
     docs_section: field-guides
     share: [claude, chatgpt, linkedin, email, copy]
     page_context_menu:
@@ -90,6 +98,9 @@ params:
       label: RHAIE Version
       default: '3.6'
       neutral: all
+      status:
+        specific: 'RHAIE {value}'
+        neutral: all versions
       options:
         - { id: all, label: Show all }
         - { id: '3.4', label: '3.4' }
@@ -99,6 +110,9 @@ params:
       label: Ops Mode
       default: all
       neutral: all
+      status:
+        specific: '{value} steps'
+        neutral: every ops mode
       options:
         - { id: all, label: Show all }
         - { id: gitops, label: GitOps }

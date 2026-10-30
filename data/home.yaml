@@ -2,13 +2,13 @@ sections: [hero, cards, cta]
 
 hero:
   align: center
-  eyebrow: Field manual prototype
+  eyebrow: prototype
   title_lines:
     - words: [{ text: The CAI Field Manual. }]
     - words: [{ text: Where the work happens. }]
   lead: A working skeleton for the field-manual example site — playbooks, procedures, and reference material that survives field conditions.
   actions:
-    - { label: Open the field guides, url: field-guides/, icon: fa-solid fa-map, style: primary }
+    - { label: Open the field guide, url: field-guides/, icon: fa-solid fa-map, style: primary }
 
 cards:
   eyebrow: Structure
@@ -33,8 +33,8 @@ cards:
       url: field-guides/hello-world/set-up/
 
 cta:
-  title: "Start with the hello-world guide."
-  text: "Duplicate it, retitle it, and fill in your own field procedures."
-  label: Open the hello-world guide
-  url: field-guides/hello-world/
+  title: "We want your feedback."
+  text: "Report issues here"
+  label: Github Issues
+  url: https://github.com/rh-aiservices-bu/CAI-Field-Manual-prototype/issues
   style: primary

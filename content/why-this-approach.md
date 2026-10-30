@@ -3,6 +3,10 @@ title: Why this approach
 description: What this prototype intends, copied from the MaaS guide, changed, and why.
 weight: 30
 icon: fa-solid fa-lightbulb
+# docs type puts this page in the docs shell, so the left nav is present on
+# every top-level entry, not just the guides and chat.
+type: docs
+footer_style: slim
 ---
 This prototype is the example of what future field guides should be. It emulates the [RHOAI MaaS guide](https://rh-aiservices-bu.github.io/rhoai-maas-guide/modules/main/index.html)'s high-level approach with deliberate divergences.
 
@@ -16,7 +20,7 @@ This prototype is the example of what future field guides should be. It emulates
 
 - **Markdown over AsciiDoc** — Hugo + Markdown, not Antora.
 - **Dual consumption built in** — every page renders as HTML for humans and as markdown for AI agents: the page action menu offers *Copy markdown*, *View markdown*, and *Open in Claude/ChatGPT*; the whole guide is also available as `llms.txt`.
-- **Page-top display options** — a selector at the top of every guide page, above the breadcrumb (RHAIE version: 3.4 / 3.5 / 3.6; ops mode: GitOps / Manual / Scripted, each with *Show all*) filters content and remembers the choice in `localStorage` across pages and visits. No re-choosing, no site forks — the MaaS guide's tabs idea, generalized.
+- **Page-top display options** — a selector at the top of every guide page, above the breadcrumb (RHAIE version: 3.4 / 3.5 / 3.6; ops mode: GitOps / Manual / Scripted, each with *Show all*) filters content — a status sentence under the selector restates the current view and follows every change — and remembers the choice in `localStorage` across pages and visits. No re-choosing, no site forks — the MaaS guide's tabs idea, generalized.
 - **Chronological guides** — each guide walks the field-work timeline: set up → operate → things that broke, instead of numbered deployment phases.
 
 ## Serving humans and AI agents

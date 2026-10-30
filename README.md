@@ -22,8 +22,11 @@ the first guide is the [Hello World Field Guide](https://rh-aiservices-bu.github
 
 - The selector at the top of every guide (RHAIE version: 3.4 / 3.5 / 3.6;
   ops mode: GitOps / Manual / Scripted — each with *Show all*) filters
-  content; the choice persists in `localStorage` across pages, visits, and
-  tabs.
+  content; the selected pill is clearly highlighted, and a status line
+  beneath the pills restates the current view as a sentence, e.g. *Showing
+  RHAIE 3.6, GitOps steps — reading as guest on
+  api.ocp.abcd.sandbox1234.opentlc.com*; the choice persists in
+  `localStorage` across pages, visits, and tabs.
 - The **Customize this!** page (bottom of the guide nav) sets every choice
   in one place: RHAIE version, ops mode, your name (default `guest`), and
   your cluster (default `.ocp.abcd.sandbox1234.opentlc.com`). The name and

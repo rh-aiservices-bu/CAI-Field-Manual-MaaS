@@ -3,7 +3,6 @@ title: Field Guides
 description: Chronological field guides — setup, operations, and the things that broke.
 weight: 20
 icon: fa-solid fa-map
-sidebar_root_for: self
 cascade:
   type: docs
   footer_style: slim

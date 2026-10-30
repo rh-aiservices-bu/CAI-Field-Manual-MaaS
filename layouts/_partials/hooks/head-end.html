@@ -12,9 +12,12 @@
      untagged content always renders. Storage-blocked readers keep the
      config defaults (no filtering).
 
-     The per-axis config is emitted as JSON (#td-variant-config) for the
-     page-top selector and the Customize form, so both validate values
-     against the configured option ids instead of trusting storage. */ -}}
+    The per-axis config is emitted as JSON (#td-variant-config) for the
+    page-top selector and the Customize form, so both validate values
+    against the configured option ids instead of trusting storage. It also
+    carries the per-axis status phrases (status.specific/status.neutral,
+    {value} = the option label); an axis without them falls back to the
+    axis label ("every <axis label>" for neutrals). */ -}}
 {{- $variants := site.Params.variants -}}
 {{- if reflect.IsSlice $variants -}}
 {{- /* Validate the config once per build, not once per page. */ -}}
@@ -56,7 +59,10 @@
 {{- range $variants }}{{- $axis := printf "%v" (.id | default "") -}}
 {{- if $axis }}{{- $ids := slice -}}
 {{- range .options }}{{- $ids = $ids | append (printf "%v" .id) -}}{{- end -}}
-{{- $blob = merge $blob (dict $axis (dict "default" (printf "%v" .default) "neutral" (printf "%v" .neutral) "ids" $ids)) -}}
+{{- $status := .status | default dict -}}
+{{- $stSpecific := index $status "specific" | default (printf "%v" (.label | default $axis)) -}}
+{{- $stNeutral := index $status "neutral" | default (printf "every %v" (.label | default $axis)) -}}
+{{- $blob = merge $blob (dict $axis (dict "default" (printf "%v" .default) "neutral" (printf "%v" .neutral) "ids" $ids "status" (dict "specific" $stSpecific "neutral" $stNeutral))) -}}
 {{- end }}{{- end -}}
 {{- $blob | jsonify | safeJS -}}</script>
 <script>

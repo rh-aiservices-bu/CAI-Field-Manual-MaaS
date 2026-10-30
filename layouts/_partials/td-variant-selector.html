@@ -7,9 +7,10 @@
      in localStorage ('td-variant:v1:<axis>'), syncs tabs via the storage
      event, and filters blocks through <html> attributes; the CSS comes from
      hooks/head-end.html, so the first paint already matches. The per-axis
-     config (#td-variant-config, emitted there) supplies defaults and the
-     valid option ids, so a stored value that is no longer configured falls
-     back instead of painting a dead attribute.
+    config (#td-variant-config, emitted there) supplies defaults, the
+    valid option ids, and the per-axis status phrases, so a stored value
+    that is no longer configured falls back instead of painting a dead
+    attribute.
 
      The print baseof never calls this partial, so print bundles carry no
      control; print and markdown outputs carry every variant, labeled,
@@ -28,6 +29,7 @@
     </div>
   {{- end }}
   {{- end }}
+  <p class="td-variant-selector__status" data-td-variant-status aria-live="polite" hidden></p>
 </div>
 <script>
 (function () {
@@ -49,13 +51,70 @@
     try { localStorage.setItem(key, value); } catch (_) {}
   }
 
+  // One axis segment of the status sentence. A configured per-axis phrase
+  // (cfg.status; {value} stands for the option label) wins; without one the
+  // wording falls back to the group's aria-label plus the rendered button
+  // text, and a neutral axis reads as "every <axis>" instead of echoing the
+  // option id.
+  function updateStatus(axis, value) {
+    var el = document.querySelector('[data-td-variant-status]');
+    if (!el || el.hidden) return;
+    var cfg = blob[axis];
+    if (!cfg) return;
+    var group = document.querySelector('[data-td-variant-options="' + axis + '"]');
+    var seg = el.querySelector('[data-td-variant-status-axis="' + axis + '"]');
+    if (!group || !seg) return;
+    var grp = group.closest('[role="group"]') || group;
+    var name = grp.getAttribute('aria-label') || axis;
+    // (value is passed in; the caller knows it without a storage read)
+    var st = cfg.status;
+    if (value === cfg.neutral) {
+      seg.textContent = (st && st.neutral) || 'every ' + name;
+      return;
+    }
+    var btn = group.querySelector('[data-td-variant-value="' + value + '"]');
+    var label = btn ? btn.textContent : value;
+    seg.textContent = st && st.specific ? st.specific.replace('{value}', label) : name + ' ' + label;
+  }
+
+  // Build the sentence once at init: "Showing RHAIE 3.6, GitOps steps —
+  // reading as <user> on api<cluster>". The customize values are
+  // data-td-customize tokens, so the existing field runtime keeps them
+  // live; updateStatus() refreshes the one axis segment that changes.
+  function renderStatus() {
+    var el = document.querySelector('[data-td-variant-status]');
+    if (!el) return;
+    if (!Object.keys(blob).length) return;
+    var groups = document.querySelectorAll('[data-td-variant-selector] [data-td-variant-options]');
+    if (!groups.length) return;
+    el.hidden = false;
+    el.textContent = 'Showing ';
+    Array.prototype.forEach.call(groups, function (group, i) {
+      var axis = group.getAttribute('data-td-variant-options');
+      if (i) el.appendChild(document.createTextNode(', '));
+      var seg = document.createElement('span');
+      seg.setAttribute('data-td-variant-status-axis', axis);
+      el.appendChild(seg);
+      updateStatus(axis, resolve(axis));
+    });
+    el.appendChild(document.createTextNode(' — reading as '));
+    var user = document.createElement('span');
+    user.setAttribute('data-td-customize', 'user');
+    el.appendChild(user);
+    el.appendChild(document.createTextNode(' on api'));
+    var cluster = document.createElement('span');
+    cluster.setAttribute('data-td-customize', 'cluster');
+    el.appendChild(cluster);
+  }
+
   // Activate one option on one axis: set the <html> attribute (CSS does the
-  // filtering), persist, mirror every button group on the page, and notify
-  // the Customize form (the shared td-variant change event).
+  // filtering), persist, mirror every button group on the page, and refresh
+  // the status sentence. mirrorVariant() is document-wide, so the Customize
+  // form's groups on the same axis follow without an extra event.
   function apply(axis, value) {
     root.setAttribute('data-td-variant-' + axis, value);
     mirrorVariant(axis, value);
-    document.dispatchEvent(new CustomEvent('td-variant', { detail: { axis: axis, value: value } }));
+    updateStatus(axis, value);
   }
 
   function mirrorVariant(axis, value) {
@@ -95,8 +154,10 @@
     return root.getAttribute('data-td-customize-' + id) || '';
   }
 
-  // Mark the active button on every group of one axis (page-top selector and
-  // the Customize form both carry data-td-variant-options groups).
+  // Set every button's pressed state on one group (page-top selector and
+  // the Customize form both carry data-td-variant-options groups) — same
+  // shape as mirrorVariant, so inactive buttons carry aria-pressed="false"
+  // from first paint.
   function initVariantGroup(group) {
     var axis = group.getAttribute('data-td-variant-options');
     if (!axis) return;
@@ -107,10 +168,9 @@
         apply(axis, next);
         storageSet(STORAGE_PREFIX + axis, next);
       });
-      if (btn.getAttribute('data-td-variant-value') === value) {
-        btn.setAttribute('aria-pressed', 'true');
-        btn.classList.add('td-is-active');
-      }
+      var active = btn.getAttribute('data-td-variant-value') === value;
+      btn.setAttribute('aria-pressed', active ? 'true' : 'false');
+      btn.classList.toggle('td-is-active', active);
     });
   }
 
@@ -142,12 +202,9 @@
         applyField(id, event.newValue || '');
       }
     });
-    // The page-top selector changed an axis: mirror it here.
-    document.addEventListener('td-variant', function (event) {
-      if (event.detail && event.detail.axis) {
-        mirrorVariant(event.detail.axis, event.detail.value);
-      }
-    });
+    // The page-top selector writes the <html> attribute; the tokens above
+    // already follow it through initTokens()'s MutationObserver, and the
+    // variant buttons are mirrored document-wide by apply().
   }
 
   function initTokens() {
@@ -171,6 +228,7 @@
       Array.prototype.forEach.call(control.querySelectorAll('[data-td-variant-options]'), initVariantGroup);
       control.hidden = false;
     }
+    renderStatus();
     initTokens();
     initCustomizeForm();
     // Cross-tab variant sync: a cleared key (event.newValue === null) falls
