@@ -111,10 +111,17 @@
 /* ---------- Status + context chip ---------- */
 
 .td-chat-status {
+  /* Span both columns: a message in the `auto` label column sets that
+   * column's width to its max-content, collapsing the `1fr` input column to
+   * ~18px — the fields look frozen because there is nothing left to type in. */
+  grid-column: 1 / -1;
   margin: 0;
   min-height: 1.25rem;
   color: var(--bs-secondary-color);
   font-size: 0.8125rem;
+  /* Long header names like Access-Control-Allow-Headers have no break
+   * opportunity; wrap them rather than widen the grid. */
+  overflow-wrap: anywhere;
 }
 
 .td-chat-status[data-state='error'] {
