@@ -27,8 +27,16 @@ hugo --cleanDestinationDir --gc --minify --environment production \
 
 Note: `--panicOnWarning` is intentionally omitted — the pinned theme version
 (v1.4.0) still transpiles SCSS with Hugo's deprecated LibSass, which emits a
-WARNING on Hugo ≥ 0.153 and would abort the build. Revisit when the theme
-moves to the Dart Sass transpiler.
+WARNING on Hugo ≥ 0.153 and would abort the build. Gate on the remaining
+warning surface instead: assert the build emits no WARN lines other than the
+known libsass one.
+
+```sh
+hugo --cleanDestinationDir --gc --minify --environment production \
+  --printPathWarnings 2>&1 | grep -i warn | grep -v "css.Sass: libsass"
+```
+
+No output = clean. Revisit when the theme moves to the Dart Sass transpiler.
 
 ## Structure
 
