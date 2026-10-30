@@ -59,9 +59,12 @@ the first guide is the [Hello World Field Guide](https://rh-aiservices-bu.github
 Where things live:
 
 - `hugo.yaml` — site config: display-option (variant) axes — an ordered
-  slice with per-axis `neutral` (show-all) and `default` — customize fields
-  (user, cluster), `docs_section: field-guides` (drives the llms.txt
-  Documentation index and the docs-sidebar fallback), GA4 placeholder
+  slice with per-axis `neutral` (show-all) and `default`, plus optional
+  `status.specific` / `status.neutral` phrases for the selector's status
+  line (`{value}` = the option label) — customize fields (user, cluster),
+  `docs_section: field-guides` (drives the llms.txt Documentation index and
+  the docs-sidebar fallback), `docs_sidebar_root: home` (left nav roots at
+  the whole site tree), GA4 placeholder
 - `data/home.yaml` — landing page sections (hero, cards, cta)
 - `content/_index.md` — home page front matter
 - `content/field-guides/` — the guides; `hello-world/` doubles as the blank
@@ -70,9 +73,14 @@ Where things live:
   copies from the MaaS guide, changes, and why)
 - `layouts/_partials/google_analytics.html` — GA4 partial (the theme's
   head.html calls it in production)
-- `layouts/docs/baseof.html` + `layouts/_partials/td-variant-selector.html` +
-  `layouts/_partials/hooks/head-end.html` — display-option blocks, the
-  page-top selector, customize tokens/form, and persistence runtime
+- `layouts/docs/baseof.html`, `layouts/_partials/shell/sidebar-tree.html` —
+  pinned copies of the oink v1.4.0 files, each headed by a provenance
+  comment naming the one deliberate change. Re-diff both against
+  `~/go/pkg/mod/github.com/pgsty/oink@v<ver>/` on a theme bump.
+- `layouts/_partials/td-variant-selector.html` +
+  `layouts/_partials/hooks/head-end.html` — the page-top selector and the
+  pre-paint persistence runtime (config blob, filter CSS). The theme ships
+  both hooks empty, so these are sanctioned extension points, not copies.
 - `layouts/_shortcodes/customize.html` +
   `layouts/_shortcodes/customize-form.html` — token substitution points
   and the Customize form
