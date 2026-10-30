@@ -1,0 +1,14 @@
+// Red Hat CAI Team header lockup: params.logo points at the fedora +
+// divider + wordmark SVG (assets/icons/logo-rh-cai.svg) instead of the
+// theme's square mark. The theme hard-sizes the brand <img> to a 22px
+// square, so the navbar slot switches to width: auto at the MaaS-guide
+// lockup height (2rem). The SVG's own media query handles theme ink.
+.td-nav-brand .td-nav-logo {
+  width: auto;
+  height: 2rem;
+}
+
+.td-shell-sidebar__brand > img {
+  width: auto;
+  height: 0.9rem;
+}
