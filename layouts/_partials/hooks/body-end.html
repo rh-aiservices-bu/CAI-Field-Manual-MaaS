@@ -1,94 +1,10 @@
-{{- /* Display-option selector: a control per axis in the navbar utility
-     zone, styled like the theme's nav util buttons. The runtime persists
-     choices in localStorage ('td-variant:v1:<axis>'), syncs other tabs via
-     the storage event, and filters blocks through <html> attributes — the
-     CSS comes from hooks/head-end.html, so the first paint already matches.
+{{- /* Chat assistant runtime (static/js/chat.js). The bundle URL is injected
+     because relLangURL must resolve here, not in JS: the chat page's
+     whole-manual context is the field-guides LLMSFULL output, which sits
+     under the site's base path on GitHub Pages.
 
-     Mounted in hooks/body-end.html (theme passthrough); it moves itself into
-     .td-nav-util-zone when that zone exists (every non-print surface with a
-     navbar). Print surfaces have no navbar, so the control stays hidden and
-     inert there. Axes and options come from params.variants. */ -}}
-<div class="td-variant-selector d-print-none" data-td-variant-selector hidden>
-  {{- range $axis, $cfg := site.Params.variants }}
-  <label class="td-variant-selector__axis" data-td-variant-axis-label="{{ $axis }}">
-    <span class="td-variant-selector__label">{{ $cfg.label | default $axis }}</span>
-    <span class="td-variant-selector__control" data-td-variant-options="{{ $axis }}">
-      {{- range $cfg.options }}
-      <button type="button" class="td-variant-option" data-td-variant-value="{{ .id }}" title="{{ .label }}">{{ .label }}</button>
-      {{- end }}
-    </span>
-  </label>
-  {{- end }}
-</div>
-<script>
-(function () {
-  var STORAGE_PREFIX = 'td-variant:v1:';
-  var SELECTOR = '[data-td-variant-selector]';
-  var root = document.documentElement;
-
-  function storageGet(key) {
-    try { return localStorage.getItem(key); } catch (_) { return null; }
-  }
-  function storageSet(key, value) {
-    try { localStorage.setItem(key, value); } catch (_) {}
-  }
-
-  // Activate one option on one axis: set the <html> attribute (CSS does the
-  // filtering), persist, and mirror on the control buttons.
-  function apply(axis, value) {
-    root.setAttribute('data-td-variant-' + axis, value);
-    var options = document.querySelectorAll('[data-td-variant-options="' + axis + '"] [data-td-variant-value]');
-    Array.prototype.forEach.call(options, function (btn) {
-      var active = btn.getAttribute('data-td-variant-value') === value;
-      btn.setAttribute('aria-pressed', active ? 'true' : 'false');
-      btn.classList.toggle('td-is-active', active);
-    });
-  }
-
-  // Resolve the current value for an axis: stored choice, else the config default.
-  function resolve(axis) {
-    var stored = storageGet(STORAGE_PREFIX + axis);
-    if (stored !== null) return stored;
-    return root.getAttribute('data-td-variant-' + axis) || 'both';
-  }
-
-  function init() {
-    var zone = document.querySelector('.td-nav-util-zone');
-    var control = document.querySelector(SELECTOR);
-    // Print and other surfaces without a navbar have no util zone: leave the
-    // control hidden and inert in place instead of unhiding it at the end of
-    // the document.
-    if (!zone || !control) return;
-    zone.appendChild(control);
-    // Wire buttons.
-    Array.prototype.forEach.call(control.querySelectorAll('[data-td-variant-options]'), function (group) {
-      var axis = group.getAttribute('data-td-variant-options');
-      Array.prototype.forEach.call(group.querySelectorAll('[data-td-variant-value]'), function (btn) {
-        btn.addEventListener('click', function () {
-          var value = btn.getAttribute('data-td-variant-value');
-          apply(axis, value);
-          storageSet(STORAGE_PREFIX + axis, value);
-        });
-        // Reflect the resolved state.
-        if (btn.getAttribute('data-td-variant-value') === resolve(axis)) {
-          btn.setAttribute('aria-pressed', 'true');
-          btn.classList.add('td-is-active');
-        }
-    });
-    });
-    // Cross-tab sync.
-    window.addEventListener('storage', function (event) {
-      if (event.key && event.key.indexOf(STORAGE_PREFIX) === 0) {
-        apply(event.key.slice(STORAGE_PREFIX.length), event.newValue);
-      }
-    });
-    control.hidden = false;
-  }
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init, { once: true });
-  } else {
-    init();
-  }
-})();
-</script>
+     The script guards itself: with no #td-chat mount it only installs the
+     Chat-link source forwarding, so print bundles and every other page stay
+     inert. */ -}}
+<script>window.__TD_CHAT__ = { llmsFull: "{{ "field-guides/llms-full.txt" | relLangURL }}" };</script>
+<script src="{{ "js/chat.js" | relLangURL }}" defer></script>

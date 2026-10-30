@@ -1,0 +1,195 @@
+{{- /* Display-option selector: a control per axis (params.variants, an
+     ordered slice), rendered at the top of every docs page — the project
+     override of layouts/docs/baseof.html calls this partial right after the
+     navbar, above the breadcrumb topline.
+
+     Styled like the theme's nav util buttons. The runtime persists choices
+     in localStorage ('td-variant:v1:<axis>'), syncs tabs via the storage
+     event, and filters blocks through <html> attributes; the CSS comes from
+     hooks/head-end.html, so the first paint already matches. The per-axis
+     config (#td-variant-config, emitted there) supplies defaults and the
+     valid option ids, so a stored value that is no longer configured falls
+     back instead of painting a dead attribute.
+
+     The print baseof never calls this partial, so print bundles carry no
+     control; print and markdown outputs carry every variant, labeled,
+     because only the interactive HTML filters content. */ -}}
+<div class="td-variant-selector d-print-none" data-td-variant-selector hidden>
+  {{- range site.Params.variants }}
+  {{- $axis := printf "%v" (.id | default "") }}
+  {{- if $axis }}
+    <div class="td-variant-selector__axis" role="group" aria-label="{{ .label | default $axis }}">
+      <span class="td-variant-selector__label">{{ .label | default $axis }}</span>
+      <span class="td-variant-selector__control" data-td-variant-options="{{ $axis }}">
+      {{- range .options }}
+      <button type="button" class="td-variant-option" data-td-variant-value="{{ .id }}" title="{{ .label }}">{{ .label }}</button>
+      {{- end }}
+      </span>
+    </div>
+  {{- end }}
+  {{- end }}
+</div>
+<script>
+(function () {
+  var STORAGE_PREFIX = 'td-variant:v1:';
+  var FIELD_PREFIX = 'td-customize:v1:';
+  var SELECTOR = '[data-td-variant-selector]';
+  var root = document.documentElement;
+  var blob = {};
+  var configEl = document.getElementById('td-variant-config');
+  if (configEl) {
+    try { blob = JSON.parse(configEl.textContent); } catch (_) {}
+  }
+  var fields = { {{- range site.Params.customize }}{{ .id | jsonify | safeJS }}: {{ .default | jsonify | safeJS }}, {{- end }} };
+
+  function storageGet(key) {
+    try { return localStorage.getItem(key); } catch (_) { return null; }
+  }
+  function storageSet(key, value) {
+    try { localStorage.setItem(key, value); } catch (_) {}
+  }
+
+  // Activate one option on one axis: set the <html> attribute (CSS does the
+  // filtering), persist, mirror every button group on the page, and notify
+  // the Customize form (the shared td-variant change event).
+  function apply(axis, value) {
+    root.setAttribute('data-td-variant-' + axis, value);
+    mirrorVariant(axis, value);
+    document.dispatchEvent(new CustomEvent('td-variant', { detail: { axis: axis, value: value } }));
+  }
+
+  function mirrorVariant(axis, value) {
+    var options = document.querySelectorAll('[data-td-variant-options="' + axis + '"] [data-td-variant-value]');
+    Array.prototype.forEach.call(options, function (btn) {
+      var active = btn.getAttribute('data-td-variant-value') === value;
+      btn.setAttribute('aria-pressed', active ? 'true' : 'false');
+      btn.classList.toggle('td-is-active', active);
+    });
+  }
+
+  // Replace every customize token with the resolved value for its field.
+  function applyField(id, value) {
+    root.setAttribute('data-td-customize-' + id, value);
+    var tokens = document.querySelectorAll('[data-td-customize="' + id + '"]');
+    Array.prototype.forEach.call(tokens, function (token) {
+      token.textContent = value;
+    });
+  }
+
+  // Resolve the current value for an axis: a stored choice that is still a
+  // configured option id, else the config default (also the fallback when
+  // the config blob is missing).
+  function resolve(axis) {
+    var cfg = blob[axis];
+    var stored = storageGet(STORAGE_PREFIX + axis);
+    if (cfg) {
+      if (stored !== null && cfg.ids.indexOf(stored) !== -1) return stored;
+      return root.getAttribute('data-td-variant-' + axis) || cfg.default;
+    }
+    return stored !== null ? stored : root.getAttribute('data-td-variant-' + axis) || '';
+  }
+
+  function resolveField(id) {
+    var stored = storageGet(FIELD_PREFIX + id);
+    if (stored !== null) return stored;
+    return root.getAttribute('data-td-customize-' + id) || '';
+  }
+
+  // Mark the active button on every group of one axis (page-top selector and
+  // the Customize form both carry data-td-variant-options groups).
+  function initVariantGroup(group) {
+    var axis = group.getAttribute('data-td-variant-options');
+    if (!axis) return;
+    var value = resolve(axis);
+    Array.prototype.forEach.call(group.querySelectorAll('[data-td-variant-value]'), function (btn) {
+      btn.addEventListener('click', function () {
+        var next = btn.getAttribute('data-td-variant-value');
+        apply(axis, next);
+        storageSet(STORAGE_PREFIX + axis, next);
+      });
+      if (btn.getAttribute('data-td-variant-value') === value) {
+        btn.setAttribute('aria-pressed', 'true');
+        btn.classList.add('td-is-active');
+      }
+    });
+  }
+
+  function initCustomizeForm() {
+    var form = document.querySelector('[data-td-customize-form]');
+    if (!form) return;
+    // Variant buttons in the form: same group attribute the selector wires.
+    Array.prototype.forEach.call(form.querySelectorAll('[data-td-variant-options]'), initVariantGroup);
+    // Text fields: debounced write to storage + <html> attr + tokens.
+    var timers = {};
+    Array.prototype.forEach.call(form.querySelectorAll('[data-td-customize-input]'), function (input) {
+      var id = input.getAttribute('data-td-customize-input');
+      input.value = resolveField(id);
+      input.addEventListener('input', function () {
+        var value = input.value;
+        if (timers[id]) window.clearTimeout(timers[id]);
+        timers[id] = window.setTimeout(function () {
+          storageSet(FIELD_PREFIX + id, value);
+          applyField(id, value);
+        }, 250);
+      });
+    });
+    // Another tab changed a field: refresh inputs and tokens.
+    window.addEventListener('storage', function (event) {
+      if (event.key && event.key.indexOf(FIELD_PREFIX) === 0) {
+        var id = event.key.slice(FIELD_PREFIX.length);
+        var input = form.querySelector('[data-td-customize-input="' + id + '"]');
+        if (input && input.value !== event.newValue) input.value = event.newValue;
+        applyField(id, event.newValue || '');
+      }
+    });
+    // The page-top selector changed an axis: mirror it here.
+    document.addEventListener('td-variant', function (event) {
+      if (event.detail && event.detail.axis) {
+        mirrorVariant(event.detail.axis, event.detail.value);
+      }
+    });
+  }
+
+  function initTokens() {
+    Array.prototype.forEach.call(document.querySelectorAll('[data-td-customize]'), function (token) {
+      token.textContent = resolveField(token.getAttribute('data-td-customize'));
+    });
+    // Live update while the reader types on the Customize page: the tokens
+    // on this page listen for the same html attribute the runtime writes.
+    var observer = new MutationObserver(function () {
+      Array.prototype.forEach.call(document.querySelectorAll('[data-td-customize]'), function (token) {
+        var value = root.getAttribute('data-td-customize-' + token.getAttribute('data-td-customize'));
+        if (value !== null && token.textContent !== value) token.textContent = value;
+      });
+    });
+    observer.observe(root, { attributes: true, attributeFilter: Object.keys(fields).map(function (id) { return 'data-td-customize-' + id; }) });
+  }
+
+  function init() {
+    var control = document.querySelector(SELECTOR);
+    if (control) {
+      Array.prototype.forEach.call(control.querySelectorAll('[data-td-variant-options]'), initVariantGroup);
+      control.hidden = false;
+    }
+    initTokens();
+    initCustomizeForm();
+    // Cross-tab variant sync: a cleared key (event.newValue === null) falls
+    // back to the config default instead of painting "null".
+    window.addEventListener('storage', function (event) {
+      if (!event.key || event.key.indexOf(STORAGE_PREFIX) !== 0) return;
+      var axis = event.key.slice(STORAGE_PREFIX.length);
+      var cfg = blob[axis];
+      if (!cfg) return;
+      var next = event.newValue;
+      if (next === null || cfg.ids.indexOf(next) === -1) next = cfg.default;
+      apply(axis, next);
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init, { once: true });
+  } else {
+    init();
+  }
+})();
+</script>

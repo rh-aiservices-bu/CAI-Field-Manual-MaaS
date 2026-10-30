@@ -20,9 +20,14 @@ the first guide is the [Hello World Field Guide](https://rh-aiservices-bu.github
 
 **Humans** — read the rendered HTML:
 
-- The header selector (ops mode: Show both / GitOps / ClicOps; guide version:
-  3.6 / 3.4) filters every guide; the choice persists in `localStorage` across
-  pages, visits, and tabs.
+- The selector at the top of every guide (RHAIE version: 3.4 / 3.5 / 3.6;
+  ops mode: GitOps / Manual / Scripted — each with *Show all*) filters
+  content; the choice persists in `localStorage` across pages, visits, and
+  tabs.
+- The **Customize this!** page (bottom of the guide nav) sets every choice
+  in one place: RHAIE version, ops mode, your name (default `guest`), and
+  your cluster (default `.ocp.abcd.sandbox1234.opentlc.com`). The name and
+  cluster substitute into every `customize` token across the guides.
 - Search with `/` or the navbar search box (`offline_search`).
 - Each section also renders a print bundle for offline/print reading.
 
@@ -32,8 +37,9 @@ the first guide is the [Hello World Field Guide](https://rh-aiservices-bu.github
   markdown*, *Open in Claude / ChatGPT*.
 - Whole site as [`llms.txt`](https://rh-aiservices-bu.github.io/CAI-Field-Manual-prototype/llms.txt).
 - The markdown, `llms.txt`, and print outputs carry every display option
-  labeled (`Axis: Option`) — only the interactive HTML filters content, so
-  agents always see all variants.
+  labeled (`Axis: Option`) and every customize token as its shipped
+  default — only the interactive HTML filters content or substitutes
+  values, so agents always see all variants with concrete values.
 
 ## Report issues, propose changes
 
@@ -49,9 +55,10 @@ the first guide is the [Hello World Field Guide](https://rh-aiservices-bu.github
 
 Where things live:
 
-- `hugo.yaml` — site config: display-option (variant) axes,
-  `docs_section: field-guides` (drives the llms.txt Documentation index and
-  the docs-sidebar fallback), GA4 placeholder
+- `hugo.yaml` — site config: display-option (variant) axes — an ordered
+  slice with per-axis `neutral` (show-all) and `default` — customize fields
+  (user, cluster), `docs_section: field-guides` (drives the llms.txt
+  Documentation index and the docs-sidebar fallback), GA4 placeholder
 - `data/home.yaml` — landing page sections (hero, cards, cta)
 - `content/_index.md` — home page front matter
 - `content/field-guides/` — the guides; `hello-world/` doubles as the blank
@@ -60,9 +67,12 @@ Where things live:
   copies from the MaaS guide, changes, and why)
 - `layouts/_partials/google_analytics.html` — GA4 partial (the theme's
   head.html calls it in production)
-- `layouts/_shortcodes/variant.html` +
-  `layouts/_partials/hooks/{head-end,body-end}.html` — display-option blocks,
-  header selector, and persistence runtime
+- `layouts/docs/baseof.html` + `layouts/_partials/td-variant-selector.html` +
+  `layouts/_partials/hooks/head-end.html` — display-option blocks, the
+  page-top selector, customize tokens/form, and persistence runtime
+- `layouts/_shortcodes/customize.html` +
+  `layouts/_shortcodes/customize-form.html` — token substitution points
+  and the Customize form
 - `.github/workflows/github-pages.yaml` — deploy workflow
 
 The project root stays minimal: the theme module supplies the navbar logo and

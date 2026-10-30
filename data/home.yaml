@@ -16,7 +16,7 @@ cards:
   columns: 2
   items:
     - title: Field Guides
-      desc: Chronological guides — set up, operate, the things that broke — filtered by the header selector (ops mode, guide version) that persists across pages.
+      desc: Chronological guides — set up, operate, the things that broke — filtered by the selector (RHAIE version, ops mode) at the top of every guide.
       icon: fa-solid fa-map
       url: field-guides/
     - title: Hello World guide

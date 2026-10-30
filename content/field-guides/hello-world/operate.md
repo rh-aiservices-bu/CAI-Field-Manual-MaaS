@@ -11,6 +11,10 @@ What an operator does on a normal day: confirm health, watch for drift, and know
 On **3.4**, the health endpoint is `/healthz` instead of `/readyz`.
 {{< /variant >}}
 
+{{< variant version "3.5 3.6" >}}
+On **3.5 and 3.6**, the health endpoint is `/readyz`.
+{{< /variant >}}
+
 ## Procedure
 
 1. Check resource health:
@@ -23,4 +27,4 @@ oc get hello hello-world
 3. If not Ready, go to [Things that broke]({{< relref "things-that-broke" >}}).
 
 > [!TIP]
-> The header selector at the top filters this guide: pick GitOps or ClicOps, 3.4 or 3.6 — the choice persists across pages and visits.
+> The selector at the top filters this guide: pick GitOps, Manual, or Scripted, and 3.4, 3.5, or 3.6 — the choice persists across pages and visits.

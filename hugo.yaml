@@ -48,6 +48,10 @@ services:
 outputs:
   home: [HTML, RSS, markdown, LLMS]
   page: [HTML, markdown]
+  # LLMSFULL is enabled per section in front matter: the theme emits it only
+  # for a top-level section and warns for nested ones, so a site-wide section
+  # output trips /field-guides/hello-world/. content/field-guides/_index.md
+  # opts in; the chat page reads that bundle as its whole-manual context.
   section: [HTML, RSS, print, markdown]
 
 params:
@@ -74,23 +78,50 @@ params:
     share: [claude, chatgpt, linkedin, email, copy]
     page_context_menu:
       assistant_links: true
-  # Display options: the header selector persists these in localStorage and
-  # filters content blocks tagged with the variant shortcode. An axis option
-  # with id `both` never hides anything; untagged blocks always render.
+  # Display options: the page-top selector (layouts/_partials/
+  # td-variant-selector.html, called by the docs/baseof.html override)
+  # persists these in localStorage and filters content blocks tagged with
+  # the variant shortcode. Ordered slice: render order in the selector and
+  # the Customize form. Every axis needs `neutral` (the show-all option id,
+  # never hides and never hidden) and a `default` that is one of its option
+  # ids. Block ids may list several options: {{< variant version "3.5 3.6" >}}.
   variants:
-    mode:
-      label: Ops mode
-      default: both
-      options:
-        - { id: both, label: Show both }
-        - { id: gitops, label: GitOps }
-        - { id: clicops, label: ClicOps }
-    version:
-      label: Guide version
+    - id: version
+      label: RHAIE Version
       default: '3.6'
+      neutral: all
       options:
-        - { id: '3.6', label: '3.6' }
+        - { id: all, label: Show all }
         - { id: '3.4', label: '3.4' }
+        - { id: '3.5', label: '3.5' }
+        - { id: '3.6', label: '3.6' }
+    - id: mode
+      label: Ops Mode
+      default: all
+      neutral: all
+      options:
+        - { id: all, label: Show all }
+        - { id: gitops, label: GitOps }
+        - { id: manual, label: Manual }
+        - { id: scripted, label: Scripted }
+  # Customize fields: text values the reader sets once on the "Customize
+  # this!" page and that substitute into every `customize` shortcode token
+  # across the guides. Defaults are the shipped examples, not real values.
+  customize:
+    - { id: user, label: Your name, default: guest }
+    - { id: cluster, label: Cluster, default: .ocp.abcd.sandbox1234.opentlc.com }
+
+# Site header navigation. oink renders .Site.Menus.main in the navbar center
+# zone and the home mobile drawer; the entry's page supplies the icon, and
+# llms.txt lists it under Site index. Field Guides stays reachable through the
+# landing cards and the sidebar, so Chat is the only entry for now.
+menus:
+  main:
+    - identifier: chat
+      name: Chat
+      pageRef: /chat
+      weight: 30
+
 module:
   imports:
     - path: github.com/pgsty/oink
