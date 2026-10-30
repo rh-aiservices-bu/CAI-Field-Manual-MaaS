@@ -369,9 +369,11 @@
       contextLabel: '',
       contextNote: '',
       contextText: '',
+      chips: [],
       history: [],
       controller: null
     };
+
 
     root.innerHTML = ''
       + '<div class="td-chat-config">'
@@ -391,6 +393,7 @@
       + '  <p class="td-chat-status" role="status" aria-live="polite"></p>'
       + '</div>'
       + '<div class="td-chat-notices" role="status" aria-live="polite"></div>'
+      + '<div class="td-chat-chips" hidden></div>'
       + '<p class="td-chat-context"></p>'
       + '<ol class="td-chat-transcript" role="log"></ol>'
       + '<p class="td-chat-empty">Ask a question and the answer appears here, grounded in this '
@@ -410,6 +413,7 @@
     var retryButton = root.querySelector('.td-chat-retry');
     var statusEl = root.querySelector('.td-chat-status');
     var contextEl = root.querySelector('.td-chat-context');
+    var chipsEl = root.querySelector('.td-chat-chips');
     var transcriptEl = root.querySelector('.td-chat-transcript');
     var noticesEl = root.querySelector('.td-chat-notices');
     var emptyEl = root.querySelector('.td-chat-empty');
@@ -439,6 +443,34 @@
       contextEl.textContent = state.contextLabel
         ? 'Discussing: ' + state.contextLabel + ' · ' + state.contextNote
         : '';
+      renderChips();
+    }
+
+    // One row of suggested prompts, above the transcript. A chip fills the
+    // composer with a page-grounded question rather than sending blind: the
+    // reader still sees and can edit what will be sent.
+    function renderChips() {
+      chipsEl.innerHTML = '';
+      var chips = state.chips || [];
+      if (!chips.length) {
+        chipsEl.hidden = true;
+        return;
+      }
+      chipsEl.hidden = false;
+      chips.forEach(function (chip) {
+        var button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'td-chat-chip';
+        button.textContent = chip.title;
+        if (chip.desc) button.title = chip.desc;
+        button.addEventListener('click', function () {
+          promptEl.value = chip.desc
+            ? 'About "' + chip.title + '": ' + chip.desc + ' — explain how it works here.'
+            : 'Summarize "' + chip.title + '" as it applies to this manual.';
+          promptEl.focus();
+        });
+        chipsEl.appendChild(button);
+      });
     }
 
     function paintConfig() {
@@ -497,6 +529,37 @@
 
     /* ---------- documentation context ---------- */
 
+    // Chips come from page titles and their "> " descriptions, not "## "
+    // headings: a heading ("Procedure", "Verification") is a nav label with a
+    // duplicate across pages and no page attribution, while an H1 names a
+    // real entry point and its description says what asking about it yields.
+    function extractChips(text, label) {
+      var chips = [];
+      var seen = {};
+      var lines = String(text || '').split('\n');
+      for (var i = 0; i < lines.length; i++) {
+        var title = /^#\s+(.+)$/.exec(lines[i]);
+        if (!title) continue;
+        var name = title[1].trim();
+        if (!name || seen[name.toLowerCase()]) continue;
+        // The next "> " blockquote is the page's own description; Hugo emits
+        // it directly under the H1, so a one-line scan is enough.
+        var desc = '';
+        for (var j = i + 1; j < lines.length && !lines[j].trim(); j++) {}
+        if (j < lines.length) desc = /^>\s*(.+)$/.exec(lines[j]) ? /^>\s*(.+)$/.exec(lines[j])[1].trim() : '';
+        seen[name.toLowerCase()] = true;
+        chips.push({ title: name, desc: desc });
+      }
+      // The attached page first, so its chip reads as "ask about this".
+      if (label) {
+        chips.sort(function (a, b) {
+          return (a.title.toLowerCase() === label.toLowerCase() ? -1 : 0)
+            - (b.title.toLowerCase() === label.toLowerCase() ? -1 : 0);
+        });
+      }
+      return chips.slice(0, 4);
+    }
+
     function applyContext(text, label) {
       var trimmed = String(text || '').trim();
       var truncated = trimmed.length > CONTEXT_CAP;
@@ -504,6 +567,7 @@
       state.contextLabel = label;
       state.contextNote = trimmed.length + ' characters'
         + (truncated ? ' — truncated to ' + CONTEXT_CAP : '');
+      state.chips = extractChips(trimmed, label);
       renderContext();
     }
 
@@ -726,7 +790,6 @@
         .then(function () {
           flush();
           finish();
-          setStatus('');
         })
         .catch(function (error) {
           // A mid-stream drop must not wipe what already arrived: keep the
@@ -748,13 +811,30 @@
         .then(function () {
           state.controller = null;
           setBusy(false);
+          // The success path sets nothing: finish() is the only place that
+          // knows whether the turn ended with an answer, a stop, or a
+          // notice, so the status line is cleared here after all of them.
+          setStatus('');
           promptEl.focus();
         });
 
       function finish() {
         if (!answer) {
           // Stop pressed before the first token, or an empty completion.
-          removeMessage(message);
+          if (!thought) {
+            removeMessage(message);
+            return;
+          }
+          // Reasoning with no answer: max_tokens spent on thinking, or a
+          // content filter tripped. The thought is the only part of the turn
+          // that exists, so keep the panel open on it and say why the answer
+          // is missing -- silence here reads as the site swallowing a reply.
+          summarizeReasoning(message, thought, startedAt, firstTokenAt);
+          message.reasoning.open = true;
+          noticesEl.insertAdjacentHTML('beforeend',
+            '<div class="td-chat-notice" data-tone="warn">'
+              + escapeHtml(ASSISTANT_NAME + ' returned no answer — its reasoning is above.')
+              + '</div>');
           return;
         }
         state.history.push({ role: 'user', content: userText });
