@@ -1,0 +1,32 @@
+sections: [hero, cards, cta]
+
+hero:
+  align: center
+  eyebrow: Field manual prototype
+  title_lines:
+    - words: [{ text: The CAI Field Manual. }]
+    - words: [{ text: Where the work happens. }]
+  lead: A working skeleton for the field-manual example site — playbooks, procedures, and reference material that survives field conditions.
+  actions:
+    - { label: Open the manual, url: docs/, icon: fa-solid fa-book, style: primary }
+
+cards:
+  eyebrow: Structure
+  title: What lives here
+  columns: 2
+  items:
+    - title: The Manual
+      desc: Organized sections — this skeleton ships with one exemplar section and one sample page to extend.
+      icon: fa-solid fa-book-open
+      url: docs/
+    - title: Contribute
+      desc: Edit content under content/docs/ and the landing copy in data/home/en.yaml; the dev server hot-reloads.
+      icon: fa-solid fa-pen-nib
+      url: docs/sample/
+
+cta:
+  title: Start with the sample page.
+  text: Duplicate it, retitle it, and fill in your own field procedures.
+  label: Open the sample
+  url: docs/sample/
+  style: primary

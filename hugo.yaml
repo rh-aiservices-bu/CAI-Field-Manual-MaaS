@@ -1,0 +1,71 @@
+title: CAI Field Manual
+baseURL: https://rh-aiservices-bu.github.io/CAI-Field-Guide-prototype/
+defaultContentLanguage: en
+disableLanguages: [zh, fr]
+enableGitInfo: true
+enableRobotsTXT: true
+enableEmoji: true
+timeZone: UTC
+
+languages:
+  en:
+    label: English
+    locale: en-US
+    weight: 1
+    title: CAI Field Manual
+    params:
+      description: Documentation, updates, and guides for your project.
+  # Keep disabled languages declared so Hugo recognizes .zh.md and .fr.md as
+  # translations instead of treating them as duplicate English pages.
+  zh:
+    label: 简体中文
+    locale: zh-CN
+    weight: 2
+    title: CAI Field Manual
+    hasCJKLanguage: true
+  fr:
+    label: Français
+    locale: fr-FR
+    weight: 3
+    title: CAI Field Manual
+
+markup:
+  goldmark:
+    renderer:
+      unsafe: true
+    parser:
+      attribute:
+        block: true
+      wrapStandAloneImageWithinParagraph: false
+  highlight:
+    noClasses: false
+
+outputs:
+  home: [HTML, RSS, markdown, LLMS]
+  page: [HTML, markdown]
+  section: [HTML, RSS, print, markdown]
+
+params:
+  github_repo: rh-aiservices-bu/CAI-Field-Guide-prototype
+  github_branch: main
+  offline_search: true
+  copyright:
+    authors: Project contributors
+    from_year: 2026
+  footer_center_info: ''
+  ui:
+    preset: paper
+    preset_menu: [paper, slate, ink, terminal]
+    dark_mode: true
+    section_index: cards
+    blog_index: cards
+    sidebar_menu_foldable: true
+    sidebar_icon_policy: groups
+    backlinks: true
+
+module:
+  imports:
+    - path: github.com/pgsty/oink
+  hugoVersion:
+    extended: true
+    min: 0.168.0
