@@ -128,8 +128,30 @@
     return [];
   }
 
-  function formatFetchError(error) {
+  // ': private' covers this site's commonest failure: an https page cannot
+  // reach http://localhost or a LAN address — Chrome's Local Network Access
+  // blocks it before any CORS header is consulted (verified: the preflight
+  // fails with ERR_BLOCKED_BY_LOCAL_NETWORK_ACCESS_CHECKS even when the server
+  // sends Access-Control-Allow-Private-Network). A public https endpoint, or
+  // the same page served over http://localhost, works.
+  function isPrivateTarget(target) {
+    if (location.protocol !== 'https:') return false;
+    var host;
+    try {
+      host = new URL(String(target)).hostname;
+    } catch (error) {
+      return false;
+    }
+    return /^(localhost|127\.|\[::1\]|10\.|192\.168\.|172\.(1[6-9]|2\d|3[01])\.)/.test(host);
+  }
+
+  function formatFetchError(error, target) {
     if (error instanceof TypeError) {
+      if (target && isPrivateTarget(target)) {
+        return 'Failed to fetch — this page is https and the endpoint is on a local or private '
+          + 'address, which the browser blocks (Local Network Access). Use a public https endpoint, '
+          + 'or run the site locally over http://localhost so the endpoint is same-origin-private.';
+      }
       return 'Failed to fetch — network or CORS blocked (the endpoint must send '
         + 'Access-Control-Allow-Origin for this origin plus Access-Control-Allow-Headers '
         + 'authorization, content-type; curl from a terminal still works)';
@@ -199,7 +221,7 @@
         done({ ok: true, models: ids });
       })
       .catch(function (error) {
-        done({ ok: false, reason: formatFetchError(error) });
+        done({ ok: false, reason: formatFetchError(error, modelsUrl(base)) });
       });
   }
 
@@ -532,7 +554,7 @@
             setStatus('Stopped.');
             return;
           }
-          setStatus('Request failed: ' + formatFetchError(error), true);
+          setStatus('Request failed: ' + formatFetchError(error, chatUrl(state.url)), true);
         })
         .then(function () {
           state.controller = null;
