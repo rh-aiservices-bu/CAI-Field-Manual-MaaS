@@ -1,5 +1,5 @@
 ---
-title: Hello World Field Manual
+title: Example section
 description: A blank field manual — duplicate this section and fill in your own field procedures.
 weight: 10
 icon: fa-solid fa-seedling

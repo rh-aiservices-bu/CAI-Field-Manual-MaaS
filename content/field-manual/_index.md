@@ -1,5 +1,5 @@
 ---
-title: Field Manual
+title: Hello World
 description: Chronological field manuals — setup, operations, and the things that broke.
 weight: 20
 icon: fa-solid fa-map

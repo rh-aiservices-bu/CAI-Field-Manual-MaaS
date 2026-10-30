@@ -12,6 +12,16 @@
   width: auto;
   height: 0.9rem;
 }
+// Wordmark face: follows each preset's UI face (--td-ui-font-family)
+// instead of the paper preset's Chakra Petch brand mark, so no reader
+// choice renders a foreign face in the brand row.
+:root { --td-brand-font-family: var(--td-ui-font-family); }
+
+.td-shell-wordmark {
+  font-size: 0.875rem;
+  letter-spacing: normal;
+  margin-inline-end: 0;
+}
 
 // Display-option selector at the top of every docs page (the project's
 // docs/baseof.html override calls it above the breadcrumb topline): two
