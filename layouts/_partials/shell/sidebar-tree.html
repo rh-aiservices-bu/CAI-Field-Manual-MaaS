@@ -37,6 +37,17 @@
     {{- /* Home as root: promote its children to the top level. */ -}}
     {{- if $navRoot.IsHome -}}
     <ul class="td-shell-tree__list td-shell-tree__list--1">
+      {{- /* Dropping the Home cover row also drops the drawer's only way back
+           to the landing page: the sidebar brand row is display:none below md
+           and the open drawer covers the navbar brand. Keep Home as a row on
+           small screens only, so desktop shows exactly the top-level entries. */ -}}
+      <li class="td-shell-tree__item td-leaf d-md-none">
+        <div class="td-shell-tree__row">
+          <a href="{{ $navRoot.RelPermalink }}" class="td-shell-tree__link">
+            <i class="fa-solid fa-house" aria-hidden="true"></i><span>{{ $navRoot.LinkTitle }}</span>
+          </a>
+        </div>
+      </li>
       {{- range partial "shell/nav-children.html" (dict "section" $navRoot) }}
       {{ partial "shell/sidebar-tree-node.html" (dict "page" $context "section" . "shouldDelayActive" $shouldDelayActive "sidebarMenuTruncate" $sidebarMenuTruncate "ulNr" 1 "ulShow" $ulShow "iconPolicy" $iconPolicy "compact" $compact "foldable" $foldable "overflow" $overflow) }}
       {{- end }}
