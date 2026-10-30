@@ -1,26 +1,103 @@
 Rendered site: https://rh-aiservices-bu.github.io/CAI-Field-Manual-prototype/
 
-# CAI-Field-Manual-prototype
+# CAI Field Manual
 
-Field Manual example site built with [Hugo](https://gohugo.io/) and the
-[OINK](https://oink.pgsty.com/) theme (`github.com/pgsty/oink`).
+The CAI Field Manual is a working example of what future field guides should
+look like: chronological field-work notes — set up → operate → things that
+broke — where every command is followed by a verify step with literal expected
+output, and known issues are documented where the reader hits them. It
+emulates the [RHOAI MaaS guide](https://rh-aiservices-bu.github.io/rhoai-maas-guide/modules/main/index.html)'s
+approach with deliberate divergences; the rationale lives in
+[Why this approach](https://rh-aiservices-bu.github.io/CAI-Field-Manual-prototype/why-this-approach/).
 
-## Prerequisites
+Built with [Hugo](https://gohugo.io/) and the [OINK](https://oink.pgsty.com/)
+theme (`github.com/pgsty/oink`).
+
+## How to consume it
+
+Start at [Field Guides](https://rh-aiservices-bu.github.io/CAI-Field-Manual-prototype/field-guides/) —
+the first guide is the [Hello World Field Guide](https://rh-aiservices-bu.github.io/CAI-Field-Manual-prototype/field-guides/hello-world/).
+
+**Humans** — read the rendered HTML:
+
+- The header selector (ops mode: Show both / GitOps / ClicOps; guide version:
+  3.6 / 3.4) filters every guide; the choice persists in `localStorage` across
+  pages, visits, and tabs.
+- Search with `/` or the navbar search box (`offline_search`).
+- Each section also renders a print bundle for offline/print reading.
+
+**AI agents** — consume the markdown:
+
+- Per-page markdown via the page action menu: *Copy markdown*, *View
+  markdown*, *Open in Claude / ChatGPT*.
+- Whole site as [`llms.txt`](https://rh-aiservices-bu.github.io/CAI-Field-Manual-prototype/llms.txt).
+- The markdown, `llms.txt`, and print outputs carry every display option
+  labeled (`Axis: Option`) — only the interactive HTML filters content, so
+  agents always see all variants.
+
+## Report issues, propose changes
+
+- **Issues** — file a [GitHub Issue](https://github.com/rh-aiservices-bu/CAI-Field-Manual-prototype/issues)
+  with the page URL (or the `content/` path) and what you hit.
+  *(Labels and triage conventions TBD for now.)*
+- **Changes** — PRs to `main` are welcome. Content lives in
+  `content/field-guides/<guide>/`; start a new guide by duplicating the blank
+  skeleton in `content/field-guides/hello-world/`. Run the publication gate
+  (below) before opening a PR. Merges to `main` deploy automatically via
+  GitHub Actions; repo Settings → Pages → Source must be **GitHub Actions**
+  (one-time admin step).
+
+Where things live:
+
+- `hugo.yaml` — site config: display-option (variant) axes,
+  `docs_section: field-guides` (drives the llms.txt Documentation index and
+  the docs-sidebar fallback), GA4 placeholder
+- `data/home.yaml` — landing page sections (hero, cards, cta)
+- `content/_index.md` — home page front matter
+- `content/field-guides/` — the guides; `hello-world/` doubles as the blank
+  skeleton to duplicate
+- `content/why-this-approach.md` — design rationale (what the prototype
+  copies from the MaaS guide, changes, and why)
+- `layouts/_partials/google_analytics.html` — GA4 partial (the theme's
+  head.html calls it in production)
+- `layouts/_shortcodes/variant.html` +
+  `layouts/_partials/hooks/{head-end,body-end}.html` — display-option blocks,
+  header selector, and persistence runtime
+- `.github/workflows/github-pages.yaml` — deploy workflow
+
+The project root stays minimal: the theme module supplies the navbar logo and
+favicon, and build outputs (`public/`, `resources/`) are gitignored and
+regenerate.
+
+## Disclaimers
+
+- **Orientation, not a support statement.** Commands and versions reflect
+  what worked during field work when the guide was written; verify against
+  the current official product documentation before relying on them.
+- **Not official product documentation.** These are field notes from
+  prototypes, maintained by project contributors.
+- **Prototype.** Structure, pages, and URLs are under development and may
+  change or move.
+
+## Clone and render locally
+
+Prerequisites:
 
 - Hugo Extended ≥ 0.168 (`hugo version`)
-- Go ≥ 1.27 — no Node.js needed
-
-## Local preview
+- Go ≥ 1.27 — no Node.js needed (Hugo modules fetch the theme)
 
 ```sh
+git clone https://github.com/rh-aiservices-bu/CAI-Field-Manual-prototype.git
+cd CAI-Field-Manual-prototype
 hugo server
 ```
 
-With a path in `baseURL` (`https://rh-aiservices-bu.github.io/CAI-Field-Manual-prototype/`),
-the dev server serves at `http://localhost:1313/CAI-Field-Manual-prototype/` —
-a 404 at the root is expected, not a broken build.
+With a path in `baseURL`
+(`https://rh-aiservices-bu.github.io/CAI-Field-Manual-prototype/`), the dev
+server serves at `http://localhost:1313/CAI-Field-Manual-prototype/` — a 404
+at the root is expected, not a broken build.
 
-## Publication gate
+### Publication gate
 
 ```sh
 hugo --cleanDestinationDir --gc --minify --environment production \
@@ -39,34 +116,3 @@ hugo --cleanDestinationDir --gc --minify --environment production \
 ```
 
 No output = clean. Revisit when the theme moves to the Dart Sass transpiler.
-
-## Structure
-
-- `hugo.yaml` — site config: GA4 placeholder, AI share targets, display-option (variant) axes, `docs_section: field-guides` (drives the llms.txt Documentation index and the docs-sidebar fallback)
-- `data/home.yaml` — landing page sections (hero, cards, cta)
-- `content/_index.md` — home page front matter
-- `content/field-guides/` — the field guides; `content/field-guides/hello-world/` is the blank guide skeleton to duplicate
-- `content/why-this-approach.md` — design rationale page (what the prototype copies from the MaaS guide, changes, and why)
-- `layouts/_partials/google_analytics.html` — GA4 partial (the theme's head.html calls it in production)
-- `layouts/_shortcodes/variant.html` + `layouts/_partials/hooks/{head-end,body-end}.html` — display-option blocks, header selector, and persistence runtime
-- `.github/workflows/github-pages.yaml` — deploy workflow (GitHub Pages via Actions)
-
-The project root stays minimal: the theme module supplies the navbar logo and
-favicon, and build outputs (`public/`, `resources/`) are gitignored and regenerate.
-
-## Display options (variants)
-
-The header selector (ops mode: Show both/GitOps/ClicOps; guide version: 3.6/3.4)
-filters `{{</* variant axis id */>}}` blocks. The choice persists in
-`localStorage` across pages and visits and syncs across tabs. Only the
-interactive HTML output filters: the per-page markdown, `llms.txt`, and the
-print bundle render every variant with an `Axis: Option` label, so AI agents
-and print readers see all variants.
-
-To add an axis or option, edit `params.variants` in `hugo.yaml` — the filter
-CSS and selector control are generated from that config.
-
-## Deployment
-
-Pushes to `main` build and deploy via GitHub Actions. Repo Settings → Pages →
-Source must be **GitHub Actions** (one-time admin step).
