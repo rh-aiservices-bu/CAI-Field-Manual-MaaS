@@ -29,10 +29,14 @@
   var MASK = '••••••••';
   var PREVIEW_LEN = 6;
 
-  var SYSTEM_PREFIX = 'You are a helpful assistant. Answer strictly from the documentation below; '
-    + 'say so when something isn\'t covered.\n\nDocumentation:\n\n';
-  var SYSTEM_NO_DOC = 'You are a helpful assistant. The documentation failed to load in this '
-    + 'browser, so you have no document context; say plainly when you cannot answer.';
+  var ASSISTANT_NAME = 'CAIssistant';
+
+  var SYSTEM_PREFIX = 'You are ' + ASSISTANT_NAME + ', the assistant for this field manual. '
+    + 'Answer strictly from the documentation below; say so when something isn\'t covered.\n\n'
+    + 'Documentation:\n\n';
+  var SYSTEM_NO_DOC = 'You are ' + ASSISTANT_NAME + ', the assistant for this field manual. The '
+    + 'documentation failed to load in this browser, so you have no document context; say plainly '
+    + 'when you cannot answer.';
 
   /* ---------- storage ---------- */
 
@@ -88,16 +92,78 @@
     return MASK;
   }
 
-  // Escape first, then a 4-rule transform: code, bold, http(s) links, newlines.
-  // No raw HTML, no images, no autolinks.
-  function safeMarkdown(text) {
-    var s = escapeHtml(text);
+  // Escape first, then a tiered transform. Both block constructs — fenced
+  // code and lists — are lifted out as opaque placeholders before the inline
+  // and newline rules run. That ordering is the whole correctness argument:
+  // inline rules would rewrite markdown *inside* a fence, and the newline
+  // rule would inject <br> between a <ul> and its own <li> elements.
+  // Still no raw HTML, no images, no autolinks.
+  function inlineMarkdown(s) {
     s = s.replace(/`([^`\n]+)`/g, '<code>$1</code>');
     s = s.replace(/\*\*([^*\n]+)\*\*/g, '<strong>$1</strong>');
     s = s.replace(/\[([^\]\n]+)\]\((https?:\/\/[^)\s]+)\)/g,
       '<a href="$2" target="_blank" rel="noopener">$1</a>');
-    s = s.replace(/\n/g, '<br>');
     return s;
+  }
+
+  // Consecutive "- ", "* " or "1. " lines become one list. Item text goes
+  // through the inline rules, so bold, code, and links survive in an item.
+  // Returns the replacement string plus the list markup it consumed.
+  function extractLists(lines, blocks) {
+    var out = [];
+    var run = null;
+    var items = [];
+    function close() {
+      if (!run) return;
+      blocks.push('<' + run + '>' + items.join('') + '</' + run + '>');
+      out.push('\u0000' + (blocks.length - 1) + '\u0000');
+      run = null;
+      items = [];
+    }
+    lines.forEach(function (line) {
+      var bullet = /^\s*[-*]\s+(.+)$/.exec(line);
+      var numbered = /^\s*\d+\.\s+(.+)$/.exec(line);
+      var ordered = !bullet && !!numbered;
+      var body = bullet ? bullet[1] : numbered ? numbered[1] : null;
+      if (!body) {
+        close();
+        out.push(line);
+        return;
+      }
+      var kind = ordered ? 'ol' : 'ul';
+      if (run !== kind) {
+        close();
+        run = kind;
+      }
+      items.push('<li>' + inlineMarkdown(body) + '</li>');
+    });
+    close();
+    return out.join('\n');
+  }
+
+  // Shared placeholder pool: fences first, then lists. Both are restored in
+  // one pass at the end, so a list inside a fence is impossible by
+  // construction (the fence text is already a placeholder when lists scan).
+  function restoreBlocks(s, blocks) {
+    return s.replace(/\u0000(\d+)\u0000/g, function (match, index) {
+      return blocks[Number(index)];
+    });
+  }
+
+  function safeMarkdown(text) {
+    var s = escapeHtml(text);
+    var blocks = [];
+    s = s.replace(/```([\w+-]*)\n([\s\S]*?)```/g, function (match, lang, code) {
+      blocks.push('<pre class="td-chat-pre"><code'
+        + (lang ? ' class="language-' + lang + '"' : '') + '>'
+        + code.replace(/\n+$/, '') + '</code></pre>');
+      return '\u0000' + (blocks.length - 1) + '\u0000';
+    });
+    s = extractLists(s.split('\n'), blocks);
+    s = s.replace(/^#{2,4}\s+(.+)$/gm, '<strong>$1</strong>');
+    s = inlineMarkdown(s);
+    s = s.replace(/\n/g, '<br>');
+    return restoreBlocks(s, blocks);
   }
 
   function normalizeEndpoint(endpoint) {
@@ -324,8 +390,11 @@
       + 'endpoint above, never to this site.</p>'
       + '  <p class="td-chat-status" role="status" aria-live="polite"></p>'
       + '</div>'
+      + '<div class="td-chat-notices" role="status" aria-live="polite"></div>'
       + '<p class="td-chat-context"></p>'
-      + '<ol class="td-chat-transcript" aria-live="polite"></ol>'
+      + '<ol class="td-chat-transcript" role="log"></ol>'
+      + '<p class="td-chat-empty">Ask a question and the answer appears here, grounded in this '
+      + 'manual.</p>'
       + '<div class="td-chat-input">'
       + '  <textarea id="td-chat-prompt" rows="3" placeholder="Ask about this manual…"></textarea>'
       + '  <div class="td-chat-input-actions">'
@@ -342,6 +411,8 @@
     var statusEl = root.querySelector('.td-chat-status');
     var contextEl = root.querySelector('.td-chat-context');
     var transcriptEl = root.querySelector('.td-chat-transcript');
+    var noticesEl = root.querySelector('.td-chat-notices');
+    var emptyEl = root.querySelector('.td-chat-empty');
     var promptEl = root.querySelector('#td-chat-prompt');
     var sendButton = root.querySelector('.td-chat-send');
     var stopButton = root.querySelector('.td-chat-stop');
@@ -489,18 +560,57 @@
 
     /* ---------- transcript ---------- */
 
+    // One message. Returns handles, not a DOM body: the assistant turn needs
+    // the reasoning disclosure and the meta line, the user turn needs neither.
     function addMessage(role) {
       var item = document.createElement('li');
       item.className = 'td-chat-msg td-chat-msg--' + role;
+
       var roleEl = document.createElement('span');
       roleEl.className = 'td-chat-msg-role';
-      roleEl.textContent = role === 'user' ? 'You' : 'Assistant';
+      roleEl.textContent = role === 'user' ? 'You' : ASSISTANT_NAME;
+
+      var head = document.createElement('div');
+      head.className = 'td-chat-msg-head';
+      head.appendChild(roleEl);
+      item.appendChild(head);
+
+      var handle = { item: item, head: head, body: null, reasoning: null, summary: null };
+
+      if (role === 'assistant') {
+        // <details> is the whole feature: keyboard-operable, no JS toggle to
+        // keep in sync with state, and it survives re-render of the body.
+        // Hidden until a reasoning delta arrives: most gateways never send
+        // one, and a permanent "Thinking…" row on those would be a lie.
+        var details = document.createElement('details');
+        details.className = 'td-chat-reasoning';
+        details.hidden = true;
+        var summary = document.createElement('summary');
+        summary.className = 'td-chat-reasoning-summary';
+        summary.textContent = 'Thinking…';
+        var thought = document.createElement('div');
+        thought.className = 'td-chat-reasoning-body';
+        details.appendChild(summary);
+        details.appendChild(thought);
+        item.insertBefore(details, null);
+        handle.reasoning = details;
+        handle.reasoningBody = thought;
+        handle.summary = summary;
+      }
+
       var body = document.createElement('div');
       body.className = 'td-chat-msg-body';
-      item.appendChild(roleEl);
       item.appendChild(body);
+      handle.body = body;
+
       transcriptEl.appendChild(item);
-      return body;
+      if (emptyEl) emptyEl.hidden = true;
+      return handle;
+    }
+
+    function removeMessage(handle) {
+      if (handle && handle.item.parentNode) handle.item.parentNode.removeChild(handle.item);
+      if (transcriptEl.children.length === 0 && emptyEl) emptyEl.hidden = false;
     }
 
     function systemPrompt() {
@@ -511,6 +621,11 @@
       sendButton.disabled = busy;
       stopButton.disabled = !busy;
       saveButton.disabled = busy;
+      // role="log" is an implicit polite live region, so without this every
+      // rAF flush would be announced and a screen reader would read the
+      // answer over and over as it streams. aria-busy suppresses that until
+      // the turn settles, then the finished message is announced once.
+      transcriptEl.setAttribute('aria-busy', busy ? 'true' : 'false');
     }
 
     function sendMessage() {
@@ -530,26 +645,39 @@
       }
       state.model = modelSelect.value;
       promptEl.value = '';
-      var userBody = addMessage('user');
-      userBody.textContent = text;
-      var assistantBody = addMessage('assistant');
-      assistantBody.textContent = '';
-      stream(text, assistantBody);
+      var userMessage = addMessage('user');
+      userMessage.body.textContent = text;
+      stream(text, addMessage('assistant'));
     }
 
-    function stream(userText, body) {
-      // History carries the raw text; the system prompt is rebuilt per request
-      // so a context fetch that finishes late still reaches the model.
-      state.history.push({ role: 'user', content: userText });
-      var messages = [{ role: 'system', content: systemPrompt() }].concat(state.history);
+    function stream(userText, message) {
+      // History carries the raw user/assistant content only: reasoning is a
+      // display artifact, and endpoints that reject the field would 400 on an
+      // echo, while the ones that accept it bill the whole chain again.
+      //
+      // The turn is committed on success, not on send: pushing here meant a
+      // failed turn left a user message with no reply behind it, so the next
+      // request carried a dangling question the transcript never showed.
+      var messages = [{ role: 'system', content: systemPrompt() }]
+        .concat(state.history)
+        .concat([{ role: 'user', content: userText }]);
       var controller = new AbortController();
       state.controller = controller;
       var answer = '';
+      var thought = '';
       var pending = false;
+      var reasoningPending = false;
+      var startedAt = Date.now();
+      var firstTokenAt = 0;
 
       function flush() {
         pending = false;
-        body.innerHTML = safeMarkdown(answer);
+        message.body.innerHTML = safeMarkdown(answer);
+      }
+
+      function flushReasoning() {
+        reasoningPending = false;
+        message.reasoningBody.textContent = thought;
       }
 
       setBusy(true);
@@ -574,43 +702,104 @@
             });
           }
           return readSse(response, function (delta) {
+            if (!firstTokenAt) firstTokenAt = Date.now();
             answer += delta;
             // rAF batching: at most one re-render per frame.
             if (!pending) {
               pending = true;
               requestAnimationFrame(flush);
             }
+          }, function (delta) {
+            if (!thought) {
+              // First reasoning delta: the panel becomes real, and opens so
+              // the reader sees the model is working before the answer lands.
+              message.reasoning.hidden = false;
+              message.reasoning.open = true;
+            }
+            thought += delta;
+            if (!reasoningPending) {
+              reasoningPending = true;
+              requestAnimationFrame(flushReasoning);
+            }
           });
         })
         .then(function () {
           flush();
-          if (answer) state.history.push({ role: 'assistant', content: answer });
+          finish();
           setStatus('');
         })
         .catch(function (error) {
-          flush();
+          // A mid-stream drop must not wipe what already arrived: keep the
+          // partial answer and commit it. A turn that streamed nothing keeps
+          // the reader's question on screen (so it can be retried) but stays
+          // out of history, since the model never answered it.
+          if (answer) finish();
+          else removeMessage(message);
           if (error && error.name === 'AbortError') {
-            // The partial answer stays on screen and stays in history.
-            if (answer) state.history.push({ role: 'assistant', content: answer });
             setStatus('Stopped.');
             return;
           }
-          setStatus('Request failed: ' + formatFetchError(error, chatUrl(state.url)), true);
+          setStatus('');
+          noticesEl.insertAdjacentHTML('beforeend',
+            '<div class="td-chat-notice" data-tone="error">'
+              + escapeHtml('Request failed: ' + formatFetchError(error, chatUrl(state.url)))
+              + '</div>');
         })
         .then(function () {
           state.controller = null;
           setBusy(false);
           promptEl.focus();
         });
+
+      function finish() {
+        if (!answer) {
+          // Stop pressed before the first token, or an empty completion.
+          removeMessage(message);
+          return;
+        }
+        state.history.push({ role: 'user', content: userText });
+        state.history.push({ role: 'assistant', content: answer });
+        summarizeReasoning(message, thought, startedAt, firstTokenAt);
+      }
     }
 
-    function readSse(response, onDelta) {
+    // Collapsed label: the reader sees what the panel is worth at a glance —
+    // how long it thought, and how many tokens it spent thinking.
+    function summarizeReasoning(message, thought, startedAt, firstTokenAt) {
+      var details = message.reasoning;
+      if (!thought || !details) {
+        if (details && details.parentNode) details.parentNode.removeChild(details);
+        return;
+      }
+      var seconds = ((firstTokenAt || Date.now()) - startedAt) / 1000;
+      var timing = seconds >= 0.1 ? 'Thought for ' + seconds.toFixed(1) + ' s' : 'Thought briefly';
+      message.summary.textContent = timing + ' · ' + thought.length + ' characters';
+      // Collapse the reasoning panel only; the answer body is the point.
+      details.open = false;
+    }
+
+    // Reasoning arrives on a different delta field per backend:
+    //   reasoning_content — DeepSeek, vLLM, QwQ, most distills
+    //   reasoning         — OpenRouter (string)
+    //   reasoning_details — OpenRouter (array of {type, text} segments)
+    // The array form must join every segment: [0].text alone truncates a
+    // multi-segment reasoning block to its first piece.
+    function reasoningDelta(delta) {
+      if (typeof delta.reasoning_content === 'string') return delta.reasoning_content;
+      if (typeof delta.reasoning === 'string') return delta.reasoning;
+      if (Array.isArray(delta.reasoning_details)) {
+        return delta.reasoning_details.map(function (part) {
+          return part && typeof part.text === 'string' ? part.text : '';
+        }).join('');
+      }
+      return '';
+    }
+
+    function readSse(response, onDelta, onReasoning) {
       var reader = response.body.getReader();
       var decoder = new TextDecoder();
       var buffer = '';
-
       var sawDone = false;
-
 
       function processEvent(eventText) {
         eventText.split('\n').forEach(function (line) {
@@ -623,7 +812,10 @@
           var chunk;
           try { chunk = JSON.parse(payload); } catch (e) { return; }
           var delta = chunk && chunk.choices && chunk.choices[0] && chunk.choices[0].delta;
-          if (delta && delta.content) onDelta(delta.content);
+          if (!delta) return;
+          var thought = reasoningDelta(delta);
+          if (thought) onReasoning(thought);
+          if (delta.content) onDelta(delta.content);
         });
       }
 
