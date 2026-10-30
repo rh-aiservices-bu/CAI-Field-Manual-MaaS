@@ -1,0 +1,41 @@
+{{- /* Pre-paint display-option state: read the reader's stored choices from
+     localStorage, set <html> attributes, and emit the filter CSS before the
+     stylesheet paints, so the first frame already matches. Mirrors the
+     theme's own td-preset/td-color-theme bootstrap pattern in head.html.
+
+     Axes come from params.variants; the filter rules are GENERATED from the
+     config, not hand-written: for every axis, an active option hides every
+     other option's blocks. An option id of `both` never hides anything and
+     is never hidden, so html[data-td-variant-<axis>='both'] matches no rule
+     and untagged content always renders. Storage-blocked readers keep the
+     server-rendered defaults (no attribute, no filtering). */ -}}
+{{- $variants := site.Params.variants -}}
+{{- if reflect.IsMap $variants -}}
+<style>
+{{- range $axis, $cfg := $variants }}
+{{- range $options := $cfg.options }}
+{{- $active := printf "%v" $options.id }}
+{{- if ne $active "both" }}
+{{- range $others := $cfg.options }}
+{{- $other := printf "%v" $others.id }}
+{{- if and (ne $other "both") (ne $other $active) }}
+  html[data-td-variant-{{ $axis }}='{{ $active }}'] [data-td-variant-axis='{{ $axis }}'][data-td-variant-id='{{ $other }}'] { display: none; }
+{{- end }}
+{{- end }}
+{{- end }}
+{{- end }}
+{{- end }}
+</style>
+<script>
+  (function () {
+    var axes = { {{- range $axis, $cfg := $variants }}{{ $axis | jsonify | safeJS }}: {{ $cfg.default | jsonify | safeJS }}, {{- end }} };
+    var root = document.documentElement;
+    Object.keys(axes).forEach(function (axis) {
+      var stored = null;
+      try { stored = localStorage.getItem('td-variant:v1:' + axis); } catch (_) {}
+      if (stored !== null) root.setAttribute('data-td-variant-' + axis, stored);
+      else root.setAttribute('data-td-variant-' + axis, axes[axis]);
+    });
+  })();
+</script>
+{{- end -}}

@@ -1,0 +1,27 @@
+# Backlog
+
+Working list of pending work for this repo. New items go at the bottom of their priority table.
+
+## Now
+
+| # | Item | Status | Notes |
+|---|------|--------|-------|
+| 1 | Commit rename + RH CAI lockup changes; push to renamed repo | pending | baseURL/github_repo → CAI-Field-Manual-prototype; assets/icons/logo-rh-cai.svg + assets/scss/main.scss; gate clean |
+
+## Next
+
+| # | Item | Status | Notes |
+|---|------|--------|-------|
+| 1 | GitHub Pages: Settings → Pages → Source = GitHub Actions (admin, one-time) | pending | required before the site publishes |
+
+## Later
+
+| # | Item | Status | Notes |
+|---|------|--------|-------|
+| | | | |
+
+## Done
+
+| # | Item | Completed | Notes |
+|---|------|-----------|-------|
+| | | | |

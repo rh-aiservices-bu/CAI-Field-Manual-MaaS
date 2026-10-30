@@ -1,0 +1,65 @@
+{{- /* One display-option block: content shown in the HTML output only when
+     the header selector's axis holds this option's id (or a "both" option,
+     or nothing). The choice persists in localStorage and filters via
+     <html> attributes + CSS generated in hooks/head-end.html, so the first
+     paint already matches the reader's stored choice.
+
+     Params: axis (required — a params.variants key), id (required — an
+     option id on that axis). A block whose id is "both" never hides, and
+     untagged page content never hides.
+
+     The markdown and print outputs render EVERY block with an
+     "Axis: Option" label, so AI agents consuming the per-page .md and
+     readers of the print bundle see all variants; only the interactive
+     HTML output filters. Do not nest variant blocks: the body renders as
+     its own Markdown document, so an inner shortcode prints literally. */ -}}
+{{- $axis := "" -}}
+{{- $id := "" -}}
+{{- if .IsNamedParams -}}
+  {{- $axis = strings.TrimSpace (printf "%v" (.Get "axis" | default "")) -}}
+  {{- $id = strings.TrimSpace (printf "%v" (.Get "id" | default "")) -}}
+{{- else -}}
+  {{- $axis = strings.TrimSpace (printf "%v" (.Get 0 | default "")) -}}
+  {{- $id = strings.TrimSpace (printf "%v" (.Get 1 | default "")) -}}
+{{- end -}}
+{{- $ok := true -}}
+{{- if not $axis }}{{ warnf "shortcode %q requires an axis at %s; skipping the block" .Name .Position }}{{ $ok = false }}{{ end -}}
+{{- if not $id }}{{ warnf "shortcode %q requires an id at %s; skipping the block" .Name .Position }}{{ $ok = false }}{{ end -}}
+{{- $axisCfg := dict -}}
+{{- if $ok -}}
+  {{- $variants := $.Page.Site.Params.variants -}}
+  {{- if not (reflect.IsMap $variants) -}}
+    {{- warnf "shortcode %q: params.variants is not configured at %s; skipping the block" .Name .Position -}}
+    {{- $ok = false -}}
+  {{- else if not (isset $variants $axis) -}}
+    {{- warnf "shortcode %q: unknown axis %q at %s; skipping the block" .Name $axis .Position -}}
+    {{- $ok = false -}}
+  {{- else -}}
+    {{- $axisCfg = index $variants $axis -}}
+  {{- end -}}
+{{- end -}}
+{{- $label := "" -}}
+{{- if $ok -}}
+  {{- $found := false -}}
+  {{- range $axisCfg.options -}}
+    {{- if eq (printf "%v" .id) $id }}{{ $found = true }}{{ $label = .label }}{{ end -}}
+  {{- end -}}
+  {{- if not $found -}}
+    {{- warnf "shortcode %q: axis %q has no option id %q at %s; skipping the block" .Name $axis $id .Position -}}
+    {{- $ok = false -}}
+  {{- end -}}
+{{- end -}}
+{{- if $ok -}}
+  {{- $axisName := $axisCfg.label | default $axis -}}
+  {{- $format := lower ($.Page.Store.Get "tdOutputFormat" | default "html") -}}
+  {{- if eq $format "html" -}}
+<div class="td-variant" data-td-variant data-td-variant-axis="{{ $axis }}" data-td-variant-id="{{ $id }}" data-td-variant-label="{{ $label }}">{{ partial "content/render-block.html" (dict "page" $.Page "scope" (printf "variant-%s-%s" $axis $id) "content" .InnerDeindent "origin" (printf "shortcode %q at %s" .Name .Position)) }}</div>
+  {{- else if eq $format "print" -}}
+<div class="td-variant td-variant--print"><p class="td-variant__tag">{{ $axisName }}: {{ $label }}</p>{{ partial "content/render-block.html" (dict "page" $.Page "scope" (printf "variant-%s-%s" $axis $id) "content" .InnerDeindent "origin" (printf "shortcode %q at %s" .Name .Position)) }}</div>
+  {{- else -}}
+**{{ $axisName }}: {{ $label }}**
+
+{{ .InnerDeindent }}
+
+  {{- end -}}
+{{- end -}}

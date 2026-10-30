@@ -40,6 +40,11 @@ markup:
   highlight:
     noClasses: false
 
+services:
+  googleAnalytics:
+    # Placeholder GA4 measurement ID — swap in the real ID before real traffic.
+    ID: G-XXXXXXXXXX
+
 outputs:
   home: [HTML, RSS, markdown, LLMS]
   page: [HTML, markdown]
@@ -65,8 +70,27 @@ params:
     blog_index: cards
     sidebar_menu_foldable: true
     sidebar_icon_policy: groups
-    backlinks: true
-
+    docs_section: field-guides
+    share: [claude, chatgpt, linkedin, email, copy]
+    page_context_menu:
+      assistant_links: true
+  # Display options: the header selector persists these in localStorage and
+  # filters content blocks tagged with the variant shortcode. An axis option
+  # with id `both` never hides anything; untagged blocks always render.
+  variants:
+    mode:
+      label: Ops mode
+      default: both
+      options:
+        - { id: both, label: Show both }
+        - { id: gitops, label: GitOps }
+        - { id: clicops, label: ClicOps }
+    version:
+      label: Guide version
+      default: '3.6'
+      options:
+        - { id: '3.6', label: '3.6' }
+        - { id: '3.4', label: '3.4' }
 module:
   imports:
     - path: github.com/pgsty/oink

@@ -8,25 +8,33 @@ hero:
     - words: [{ text: Where the work happens. }]
   lead: A working skeleton for the field-manual example site — playbooks, procedures, and reference material that survives field conditions.
   actions:
-    - { label: Open the manual, url: docs/, icon: fa-solid fa-book, style: primary }
+    - { label: Open the field guides, url: field-guides/, icon: fa-solid fa-map, style: primary }
 
 cards:
   eyebrow: Structure
   title: What lives here
   columns: 2
   items:
-    - title: The Manual
-      desc: Organized sections — this skeleton ships with one exemplar section and one sample page to extend.
-      icon: fa-solid fa-book-open
-      url: docs/
+    - title: Field Guides
+      desc: Chronological guides — set up, operate, the things that broke — filtered by the header selector (ops mode, guide version) that persists across pages.
+      icon: fa-solid fa-map
+      url: field-guides/
+    - title: Hello World guide
+      desc: "The blank field-guide skeleton: duplicate it and fill in your own field procedures."
+      icon: fa-solid fa-seedling
+      url: field-guides/hello-world/
+    - title: Why this approach
+      desc: "What the prototype copies from the MaaS guide, changes on purpose, and why — for the team walkthrough."
+      icon: fa-solid fa-lightbulb
+      url: why-this-approach/
     - title: Contribute
-      desc: Edit content under content/docs/ and the landing copy in data/home/en.yaml; the dev server hot-reloads.
+      desc: "Edit guides under content/field-guides/ and the landing copy in data/home.yaml; the dev server hot-reloads."
       icon: fa-solid fa-pen-nib
-      url: docs/sample/
+      url: field-guides/hello-world/set-up/
 
 cta:
-  title: Start with the sample page.
-  text: Duplicate it, retitle it, and fill in your own field procedures.
-  label: Open the sample
-  url: docs/sample/
+  title: "Start with the hello-world guide."
+  text: "Duplicate it, retitle it, and fill in your own field procedures."
+  label: Open the hello-world guide
+  url: field-guides/hello-world/
   style: primary
