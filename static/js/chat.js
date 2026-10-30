@@ -128,29 +128,50 @@
     return [];
   }
 
-  // ': private' covers this site's commonest failure: an https page cannot
-  // reach http://localhost or a LAN address — Chrome's Local Network Access
-  // blocks it before any CORS header is consulted (verified: the preflight
-  // fails with ERR_BLOCKED_BY_LOCAL_NETWORK_ACCESS_CHECKS even when the server
-  // sends Access-Control-Allow-Private-Network). A public https endpoint, or
-  // the same page served over http://localhost, works.
-  function isPrivateTarget(target) {
-    if (location.protocol !== 'https:') return false;
-    var host;
+  // The reader's endpoint is usually on loopback (Ollama, LM Studio) or a LAN
+  // box, while this site is served from a public origin. Chrome gates that
+  // public-to-private direction behind Local Network Access; when it does, it
+  // rejects the preflight before reading any CORS header, so the failure looks
+  // exactly like a missing Access-Control-Allow-Origin. Observed both ways:
+  // headless Chrome (permission state "denied") fails the preflight with
+  // ERR_BLOCKED_BY_LOCAL_NETWORK_ACCESS_CHECKS, a headed Chrome (state
+  // "prompt") completed the same request. https-ness plays no part — an https
+  // page on localhost reaches localhost. Access-Control-Allow-Private-Network
+  // is not a substitute for the permission.
+  function isLocalHostname(host) {
+    var name = String(host || '').toLowerCase();
+    if (!name) return false;
+    return name === 'localhost' || name === '[::1]' || name === '::1'
+      || /^127\./.test(name)
+      || /^10\./.test(name)
+      || /^192\.168\./.test(name)
+      || /^172\.(1[6-9]|2\d|3[01])\./.test(name)
+      || /\.local$/.test(name);
+  }
+
+  function hostnameOf(target) {
     try {
-      host = new URL(String(target)).hostname;
+      return new URL(String(target)).hostname;
     } catch (error) {
-      return false;
+      return '';
     }
-    return /^(localhost|127\.|\[::1\]|10\.|192\.168\.|172\.(1[6-9]|2\d|3[01])\.)/.test(host);
+  }
+
+  // True when this page is on a public origin and the endpoint is private:
+  // exactly the direction Local Network Access governs.
+  function isLocalNetworkTarget(target) {
+    return isLocalHostname(hostnameOf(target)) && !isLocalHostname(location.hostname);
   }
 
   function formatFetchError(error, target) {
     if (error instanceof TypeError) {
-      if (target && isPrivateTarget(target)) {
-        return 'Failed to fetch — this page is https and the endpoint is on a local or private '
-          + 'address, which the browser blocks (Local Network Access). Use a public https endpoint, '
-          + 'or run the site locally over http://localhost so the endpoint is same-origin-private.';
+      if (target && isLocalNetworkTarget(target)) {
+        return 'Failed to fetch — this page is on a public origin and the endpoint is on a local '
+          + 'or private address. Chrome can require Local Network Access permission for that; allow '
+          + 'it when prompted, or open this site locally so the request stays local. If it was '
+          + 'allowed (or blocked outright), the endpoint must also send '
+          + 'Access-Control-Allow-Origin for this origin plus Access-Control-Allow-Headers '
+          + 'authorization, content-type.';
       }
       return 'Failed to fetch — network or CORS blocked (the endpoint must send '
         + 'Access-Control-Allow-Origin for this origin plus Access-Control-Allow-Headers '
@@ -188,13 +209,24 @@
     ssSet(SS_MODELS, JSON.stringify({ endpoint: base, at: Date.now(), models: models }));
   }
 
+  // A typo'd or firewalled host drops the SYN and never rejects, which used to
+  // leave the model select and status parked on "Saved." forever — the
+  // commonest field failure showing no diagnostic at all. AbortSignal.timeout
+  // bounds it and turns the hang into a message.
+  var MODEL_LIST_TIMEOUT_MS = 10000;
+
   function listModels(base, key, done) {
     var cached = readModelCache(base);
     if (cached) {
       done({ ok: true, models: cached });
       return;
     }
-    fetch(modelsUrl(base), { headers: { Authorization: 'Bearer ' + key } })
+    var url = modelsUrl(base);
+    var options = { headers: { Authorization: 'Bearer ' + key } };
+    if (typeof AbortSignal !== 'undefined' && AbortSignal.timeout) {
+      options.signal = AbortSignal.timeout(MODEL_LIST_TIMEOUT_MS);
+    }
+    fetch(url, options)
       .then(function (response) {
         return response.text().then(function (text) {
           if (!response.ok) {
@@ -213,7 +245,7 @@
           .map(function (model) { return model && (model.id || model.name); })
           .filter(Boolean);
         if (!ids.length) {
-          done({ ok: false, reason: 'no models returned by ' + modelsUrl(base) });
+          done({ ok: false, reason: 'no models returned by ' + url });
           return;
         }
         // Failed fetches are never cached; only a successful list is.
@@ -221,7 +253,16 @@
         done({ ok: true, models: ids });
       })
       .catch(function (error) {
-        done({ ok: false, reason: formatFetchError(error, modelsUrl(base)) });
+        if (error && (error.name === 'TimeoutError' || error.name === 'AbortError')) {
+          done({
+            ok: false,
+            reason: 'no response from ' + url + ' within '
+              + Math.round(MODEL_LIST_TIMEOUT_MS / 1000)
+              + 's — host unreachable or firewalled, or Local Network Access was not allowed'
+          });
+          return;
+        }
+        done({ ok: false, reason: formatFetchError(error, url) });
       });
   }
 
