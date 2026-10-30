@@ -14,7 +14,7 @@ Everything here ships with oink 1.4.0. Nothing below needs new dependencies — 
 
 Some capabilities the site already has through theme defaults — they show up the moment content asks for them:
 
-- **Keyboard navigation** (`keyboard_nav: true`, theme default): WASD/arrow tree focus, `j`/`k` outline jumps, `q`/`e` paging, shell and palette toggles. Press <kbd>?</kbd> in the footer for the full map.
+- **Keyboard navigation** (`keyboard_nav: true`, theme default): WASD/arrow tree focus, `j`/`k` outline jumps, `q`/`e` paging, shell and palette toggles. The question-mark button in the footer's bottom bar (hover, focus, or touch — `?` itself is reserved and unbound) opens the cheat sheet listing every shortcut available on the current page.
 - **Mermaid diagrams**: zero config — the runtime loads only on pages with a ```` ```mermaid ```` fence. First one on this page, below.
 - **Right-rail taxonomy clouds** (`toc_taxonomies: true`, theme default): wired, but the manuals carry no tags. Adding `tags:` front matter to a manual is the whole activation.
 
