@@ -2,47 +2,55 @@ sections: [hero, cards, cta]
 
 hero:
   align: center
-  eyebrow: prototype
+  eyebrow: field manual
   title_lines:
-    - words: [{ text: The CAI Field Manual. }]
-    - words: [{ text: Where the work happens. }]
-  lead: A working skeleton for the field-manual example site — playbooks, procedures, and reference material that survives field conditions.
+    - words: [{ text: The CAI Field Manual for MaaS. }]
+    - words: [{ text: Deploy, govern, verify — where the work happens. }]
+  lead: Deploy Red Hat OpenShift AI Models-as-a-Service on OpenShift 4.19+ — Kustomize manifests with status gates, a single automation script, and every command followed by a verify step.
   actions:
-    - { label: Open the "hello world" of field manuals, url: field-manual/, icon: fa-solid fa-map, style: primary }
+    - { label: Start with the Overview, url: guide/, icon: fa-solid fa-book-open, style: primary }
 
 cards:
   eyebrow: Structure
   title: What lives here
   columns: 2
   items:
-    - title: Field Manual
-      desc: Chronological manuals — set up, operate, the things that broke — filtered by the selector (RHAIE version, ops mode) at the top of every manual.
-      icon: fa-solid fa-map
-      url: field-manual/
-    - title: Hello World Field Manual
-      desc: "The blank field-manual skeleton: duplicate it and fill in your own field procedures."
-      icon: fa-solid fa-seedling
-      url: field-manual/hello-world/
-    - title: Why this approach
-      desc: "What the prototype copies from the MaaS guide, changes on purpose, and why — for the team walkthrough."
-      icon: fa-solid fa-lightbulb
-      url: why-this-approach/
-    - title: Writing the field manual
-      desc: "The doctrine for authors — the six conventions behind every manual here, annotated examples, and the walkthrough for a first manual."
-      icon: fa-solid fa-pen-ruler
-      url: writing-the-field-manual/
-    - title: Contribute
-      desc: "Edit manuals under content/field-manual/ and the landing copy in data/home.yaml; the dev server hot-reloads."
-      icon: fa-solid fa-pen-nib
-      url: writing-the-field-manual/write-a-manual/
-    - title: Potential improvements
-      desc: "What the field manual does not use yet — oink 1.4.0 capabilities left on the table, each illustrated on the page."
+    - title: Automated Setup
+      desc: One script installs the platform, deploys a model, and verifies every step — with per-phase flags for partial runs.
+      icon: fa-solid fa-bolt
+      url: guide/quick-start/
+    - title: Disconnected Setup
+      desc: Mirror the operators and images, then install MaaS on a cluster with no external connectivity — Phase 0.
+      icon: fa-solid fa-box-open
+      url: guide/disconnected/
+    - title: Installation Guide
+      desc: Phases 1–4 — prerequisites, platform configuration, MaaS platform infrastructure, and RHOAI configuration.
+      icon: fa-solid fa-download
+      url: guide/installation-guide/
+    - title: Model Deployment & Verification
+      desc: Phases 5–6 — deploy MaaS models with governance, then run the end-to-end verification suite.
+      icon: fa-solid fa-rocket
+      url: guide/model-deployment/
+    - title: Upgrade 3.4 → 3.5
+      desc: Platform upgrade steps and post-upgrade troubleshooting — status conditions, new CRDs, and the issues that break upgrades.
       icon: fa-solid fa-arrow-up-right-dots
-      url: potential-improvements/
+      url: guide/upgrade/
+    - title: Reference
+      desc: Architecture and request flow, API key security, multi-tenancy, CORS, and model swap — how MaaS works under the hood.
+      icon: fa-solid fa-book
+      url: guide/reference/
+    - title: Demos
+      desc: Rate limiting, OIDC, and governance walkthroughs plus the corporate scenario — division-level model governance.
+      icon: fa-solid fa-flask
+      url: guide/demos/demos/
+    - title: Cleanup & Teardown
+      desc: Remove the platform, models, and observability stack without breaking the cluster for the next run.
+      icon: fa-solid fa-broom
+      url: guide/cleanup/
 
 cta:
   title: "We want your feedback."
   text: "Report issues here"
-  label: Github Issues
-  url: https://github.com/rh-aiservices-bu/CAI-Field-Manual-prototype/issues
+  label: GitHub Issues
+  url: https://github.com/rh-aiservices-bu/CAI-Field-Manual-MaaS/issues
   style: primary

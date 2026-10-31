@@ -77,10 +77,8 @@
     seg.textContent = st && st.specific ? st.specific.replace('{value}', label) : name + ' ' + label;
   }
 
-  // Build the sentence once at init: "Showing RHAIE 3.6, GitOps steps —
-  // reading as <user> on api<cluster>". The customize values are
-  // data-td-customize tokens, so the existing field runtime keeps them
-  // live; updateStatus() refreshes the one axis segment that changes.
+  // Build the sentence once at init: "Showing RHAIE 3.6". updateStatus()
+  // refreshes the one axis segment that changes.
   function renderStatus() {
     var el = document.querySelector('[data-td-variant-status]');
     if (!el) return;
@@ -97,14 +95,6 @@
       el.appendChild(seg);
       updateStatus(axis, resolve(axis));
     });
-    el.appendChild(document.createTextNode(' — reading as '));
-    var user = document.createElement('span');
-    user.setAttribute('data-td-customize', 'user');
-    el.appendChild(user);
-    el.appendChild(document.createTextNode(' on api'));
-    var cluster = document.createElement('span');
-    cluster.setAttribute('data-td-customize', 'cluster');
-    el.appendChild(cluster);
   }
 
   // Activate one option on one axis: set the <html> attribute (CSS does the

@@ -13,11 +13,11 @@
      config defaults (no filtering).
 
     The per-axis config is emitted as JSON (#td-variant-config) for the
-    page-top selector and the Customize form, so both validate values
-    against the configured option ids instead of trusting storage. It also
-    carries the per-axis status phrases (status.specific/status.neutral,
-    {value} = the option label); an axis without them falls back to the
-    axis label ("every <axis label>" for neutrals). */ -}}
+    page-top selector, so it validates stored values against the configured
+    option ids instead of trusting storage. It also carries the per-axis
+    status phrases (status.specific/status.neutral, {value} = the option
+    label); an axis without them falls back to the axis label ("every <axis
+    label>" for neutrals). */ -}}
 {{- $variants := site.Params.variants -}}
 {{- if reflect.IsSlice $variants -}}
 {{- /* Validate the config once per build, not once per page. */ -}}
@@ -69,7 +69,6 @@
   (function () {
     var blob = {};
     try { blob = JSON.parse(document.getElementById('td-variant-config').textContent); } catch (_) {}
-    var fields = { {{- range site.Params.customize }}{{ .id | jsonify | safeJS }}: {{ .default | jsonify | safeJS }}, {{- end }} };
     var root = document.documentElement;
     // A stored value that is no longer a configured option id (an axis was
     // renamed, an option dropped) falls back to the config default and the
@@ -95,18 +94,6 @@
         localStorage.removeItem(key);
       });
     } catch (_) {}
-    // Customize fields: pre-paint the stored value as an <html> attribute;
-    // the token runtime reads it before first paint, so tokens never flash
-    // the default.
-    Object.keys(fields).forEach(function (id) {
-      var stored = null;
-      try { stored = localStorage.getItem('td-customize:v1:' + id); } catch (_) {}
-      root.setAttribute('data-td-customize-' + id, stored !== null ? stored : fields[id]);
-    });
   })();
 </script>
 {{- end -}}
-{{- /* Chat assistant styles (static/css/chat.css). relLangURL because GitHub
-     Pages serves this site under /CAI-Field-Manual-prototype/: a root-absolute
-     href would 404 there. */ -}}
-<link rel="stylesheet" href="{{ "css/chat.css" | relLangURL }}">
