@@ -12,13 +12,13 @@ Working list of pending work for this repo. New items go at the bottom of their 
 
 | # | Item | Status | Notes |
 |---|------|--------|-------|
-| 1 | GitHub Pages: Settings → Pages → Source = GitHub Actions (admin, one-time) | pending | required before the site publishes |
+| 1 | Pages enablement: self-served by the workflow (`configure-pages` with `enablement: true`, committed 2026-11-02) — runs on first `migrate-maas-guide` push | pending first run | replaces the manual Settings → Pages → Source = GitHub Actions admin step |
 
 ## Later
 
 | # | Item | Status | Notes |
 |---|------|--------|-------|
-| | | | |
+| Remove `migrate-maas-guide` from the Pages workflow trigger after the migration merges to `main` (revert 60c1a1f) | |
 
 ## Done
 
