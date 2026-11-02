@@ -24,4 +24,5 @@ Working list of pending work for this repo. New items go at the bottom of their 
 
 | # | Item | Completed | Notes |
 |---|------|-----------|-------|
+| 2 | Repo settings: enable Issues on the repo | 2026-11-02 | `gh api` confirms `has_issues: true`; README issues bullet and landing CTA already correct (restored to HEAD by the user); oink create-issue action now 404s nowhere; pinned `page-urls.html` override removed (issues-disable workaround obsolete) |
 | | | | |

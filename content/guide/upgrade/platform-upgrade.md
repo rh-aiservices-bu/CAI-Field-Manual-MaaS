@@ -199,7 +199,7 @@ oc get llminferenceservice -A
 
 Migrate each LLMInferenceService using one of the following paths.
 
-### Path A: Delete and let the operator re-reconcile
+**Path A: Delete and let the operator re-reconcile**
 
 Delete the LLMInferenceService and re-create it from your manifest or GitOps repository. The operator re-renders it against the latest presets, including the new BBR HTTPRoute and all other policy changes:
 
@@ -212,7 +212,7 @@ oc apply -f <llminferenceservice>.yaml -n <namespace>
 > [!WARNING]
 > Deleting the LLMInferenceService guarantees downtime: the model is unavailable until the operator recreates the service and the replacement pod is Ready.
 
-### Path B: Remove the pinned status annotation
+**Path B: Remove the pinned status annotation**
 
 Remove the pinned preset annotation from the status subresource to trigger a reconcile against the latest presets without recreating the custom resource:
 
