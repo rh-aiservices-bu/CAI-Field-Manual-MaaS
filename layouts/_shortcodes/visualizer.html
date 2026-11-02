@@ -4,6 +4,7 @@
 <div class="td-viz-embed" id="td-viz-embed-{{ .Ordinal }}">
   <button type="button" class="td-viz-embed__expand" aria-label="Expand the visualizer" title="Expand"></button>
   <iframe src="{{ .Get "file" | relURL }}" title="{{ .Get "label" }}" loading="lazy"></iframe>
+  <a class="td-viz-embed__fallback" href="{{ .Get "file" | relURL }}" target="_blank" rel="noopener">Open the {{ .Get "label" }} in a new tab</a>
 </div>
 {{/* Expand toggle: fixed-inset lightbox, where the FlowStory engine's
      (iframeW - 380px) working width makes node labels legible. */ -}}

@@ -233,6 +233,10 @@ code.td-customize-token {
     border: 0;
   }
 
+  &__fallback {
+    display: none;
+  }
+
   &__expand {
     position: absolute;
     top: 0.5rem;
@@ -277,6 +281,22 @@ code.td-customize-token {
 
     .td-viz-embed__expand::before {
       content: "✕";
+    }
+  }
+}
+
+// Phone/tablet (<768px): the engine's fixed 380px panel swallows the
+// whole frame (workWidth = innerWidth - 380 goes negative), so the
+// embed would show only panel chrome -- swap to the new-tab link.
+@media (max-width: 767.98px) {
+  .td-viz-embed {
+    iframe,
+    .td-viz-embed__expand {
+      display: none;
+    }
+
+    &__fallback {
+      display: block;
     }
   }
 }
