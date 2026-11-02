@@ -1,2 +1,27 @@
-{{/* Links a file under static/ with the baseURL subpath applied. */ -}}
+{{/* Links a file under static/ with the baseURL subpath applied,
+     or embeds it in-page when embed="true". */ -}}
+{{ if eq (.Get "embed") "true" }}
+<div class="td-viz-embed" id="td-viz-embed-{{ .Ordinal }}">
+  <button type="button" class="td-viz-embed__expand" aria-label="Expand the visualizer" title="Expand"></button>
+  <iframe src="{{ .Get "file" | relURL }}" title="{{ .Get "label" }}" loading="lazy"></iframe>
+</div>
+{{/* Expand toggle: fixed-inset lightbox, where the FlowStory engine's
+     (iframeW - 380px) working width makes node labels legible. */ -}}
+<script>
+(function () {
+  var embed = document.getElementById('td-viz-embed-{{ .Ordinal }}');
+  if (!embed) return;
+  var btn = embed.querySelector('.td-viz-embed__expand');
+  btn.addEventListener('click', function () {
+    var open = embed.classList.toggle('td-viz-embed--expanded');
+    document.documentElement.classList.toggle('td-viz-lock', open);
+    btn.setAttribute('aria-label', open ? 'Collapse the visualizer' : 'Expand the visualizer');
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && embed.classList.contains('td-viz-embed--expanded')) btn.click();
+  });
+})();
+</script>
+{{ else }}
 <a href="{{ .Get "file" | relURL }}" target="_blank" rel="noopener">{{ .Get "label" }}</a>
+{{ end -}}

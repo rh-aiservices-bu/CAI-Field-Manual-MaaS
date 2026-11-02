@@ -170,7 +170,7 @@ To see all of the above in action, explore the interactive animated visualizer â
 For pod-by-pod debugging with `oc` commands, see [Request Deep Dive]({{< relref "/guide/reference/request-deepdive" >}}).
 
 > [!NOTE]
-> {{< visualizer file="visualizers/flow.html" label="Open the RHOAI 3.5 Flow Visualizer" >}} (opens in a new tab)
+> {{< visualizer file="visualizers/flow.html" label="RHOAI 3.5 Flow Visualizer" embed="true" >}}
 > *5 Flows | 5 Providers | Two-stage IPP | 33 Steps | 30+ Components*
 > Corrected two-stage IPP (pre/post Kuadrant), WasmPlugin CRs, ExternalProvider/ExternalModel split, ipp-managed label, redhat-ai-gateway-infra namespace.
 

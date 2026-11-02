@@ -75,7 +75,11 @@ Where things live:
 - `layouts/_shortcodes/variant.html` — the variant shortcode used by the
   converted version tabs
 - `layouts/_shortcodes/visualizer.html` — links the flowstory attachments
-  under static/visualizers/ with the baseURL subpath applied
+  under static/visualizers/ with the baseURL subpath applied; `embed="true"`
+  renders an in-page iframe with an expand toggle (fixed-inset lightbox --
+  the FlowStory engine's `(iframeW - 380px)` working width needs the full
+  shell for legible labels). Styled by `.td-viz-embed` in
+  assets/scss/_styles_project.scss, hidden in print output
 - `.github/workflows/github-pages.yaml` — deploy workflow
 
 Automation and manifests that the guide references, copied so clone commands

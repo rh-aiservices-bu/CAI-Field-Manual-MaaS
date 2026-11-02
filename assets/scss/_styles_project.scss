@@ -213,3 +213,83 @@ code.td-customize-token {
     font-weight: 600;
   }
 }
+// In-page visualizer embeds (visualizer shortcode, embed="true"). The
+// FlowStory engine scales to min((iframeW - 380px panel)/1250,
+// iframeH/1150), so the in-column 4:3 frame is context only; the expand
+// toggle takes a fixed-inset lightbox (covers the shell's TOC aside),
+// where the frame is wide enough for legible node labels. Border/radius
+// follow the theme's light/dark tokens.
+.td-viz-embed {
+  position: relative;
+  margin: 1rem 0;
+  border: 1px solid var(--bs-border-color);
+  border-radius: 0.5rem;
+  overflow: hidden;
+
+  iframe {
+    display: block;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    border: 0;
+  }
+
+  &__expand {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    z-index: 10;
+    width: 2rem;
+    height: 2rem;
+    display: grid;
+    place-items: center;
+    padding: 0;
+    border: 1px solid var(--bs-border-color);
+    border-radius: 0.375rem;
+    background: var(--bs-body-bg);
+    color: var(--bs-body-color);
+    cursor: pointer;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+
+    &::before {
+      content: "⛶";
+      font-size: 1rem;
+      line-height: 1;
+    }
+
+    &:hover {
+      border-color: var(--bs-primary, var(--bs-border-color));
+    }
+  }
+
+  &--expanded {
+    position: fixed;
+    inset: 1rem;
+    z-index: 2050;
+    margin: 0;
+    border-radius: 0.75rem;
+    background: var(--bs-body-bg);
+    box-shadow: 0 12px 48px rgba(0, 0, 0, 0.35);
+
+    iframe {
+      aspect-ratio: auto;
+      height: 100%;
+    }
+
+    .td-viz-embed__expand::before {
+      content: "✕";
+    }
+  }
+}
+
+// Expanded lightbox locks page scroll behind it.
+html.td-viz-lock {
+  overflow: hidden;
+}
+
+// Print output (_print pages): a lazy iframe never loads there, so the
+// embed collapses to a blank bordered box -- drop it entirely.
+@media print {
+  .td-viz-embed {
+    display: none;
+  }
+}
