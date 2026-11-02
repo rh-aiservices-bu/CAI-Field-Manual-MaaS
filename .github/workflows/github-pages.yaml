@@ -41,8 +41,6 @@ jobs:
       - name: Configure GitHub Pages
         id: pages
         uses: actions/configure-pages@v6
-        with:
-          enablement: true
 
       - name: Install Hugo Extended
         uses: peaceiris/actions-hugo@v3
@@ -58,11 +56,24 @@ jobs:
       - name: Download OINK
         run: go mod download github.com/pgsty/oink
 
+      - name: Generate branch params
+        run: |
+          cat > branch-params.yaml <<EOF
+          params:
+            github_branch: "${GITHUB_REF_NAME}"
+          EOF
+
       - name: Build
         run: |
           hugo --cleanDestinationDir --gc --minify --environment production \
             --printPathWarnings \
-            --baseURL "${{ steps.pages.outputs.base_url }}/"
+            --baseURL "${{ steps.pages.outputs.base_url }}/" \
+            --config "hugo.yaml,branch-params.yaml"
+        # github_branch drives the edit/history links (default main). The
+        # overlay points them at the deploying branch: branch deploys get
+        # edit links that work before merge, main deploys self-correct to
+        # main. Nothing committed, so nothing to revert when the temporary
+        # branch trigger goes away.
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v5

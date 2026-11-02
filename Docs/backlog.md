@@ -12,13 +12,13 @@ Working list of pending work for this repo. New items go at the bottom of their 
 
 | # | Item | Status | Notes |
 |---|------|--------|-------|
-| 1 | Pages enablement: self-served by the workflow (`configure-pages` with `enablement: true`, committed 2026-11-02) — runs on first `migrate-maas-guide` push | pending first run | replaces the manual Settings → Pages → Source = GitHub Actions admin step |
+| 1 | Pages: live — site created via admin API and deploys verified from `migrate-maas-guide` (2026-11-02); workflow triggers on branch pushes and `workflow_dispatch` | done | one-time admin acts: site creation + `github-pages` deployment-branch policy grant (cleanup in Later) |
 
 ## Later
 
 | # | Item | Status | Notes |
 |---|------|--------|-------|
-| Remove `migrate-maas-guide` from the Pages workflow trigger after the migration merges to `main` (revert 60c1a1f) | |
+| After the migration merges to `main`: revert 60c1a1f (remove `migrate-maas-guide` from the Pages workflow trigger) and remove the `migrate-maas-guide` entry from the `github-pages` environment's deployment-branch policy (added 2026-11-02) — otherwise the old branch keeps deploy rights to the production environment | |
 
 ## Done
 
