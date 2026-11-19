@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: maas-gateway-options
+  namespace: openshift-ingress
+data:
+  deployment: |
+    spec:
+      template:
+        spec:
+          containers:
+          - name: istio-proxy
+            env:
+            - name: HTTP_PROXY
+              value: "${HTTP_PROXY}"
+            - name: HTTPS_PROXY
+              value: "${HTTPS_PROXY}"
+            - name: NO_PROXY
+              value: "${NO_PROXY}"
+            resources:
+              requests:
+                # 500m, not 100m: the Sail Operator gives this Deployment an HPA
+                # that targets 80% CPU *of the request*. A gateway running the
+                # Kuadrant Wasm filters idles at 145-271m, so a 100m request put
+                # the HPA permanently at maxReplicas (10 pods x 2Gi).
+                cpu: 500m
+                memory: 256Mi
+              limits:
+                cpu: "2"
+                memory: 2Gi
