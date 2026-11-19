@@ -19,8 +19,7 @@ Built with [Hugo](https://gohugo.io/) and the [OINK](https://oink.pgsty.com/)
 theme (`github.com/pgsty/oink`, transitively via the Shell module).
 
 ## How to consume it
-
-Start at [Guide](https://rh-aiservices-bu.github.io/CAI-Field-Manual-MaaS/guide/) —
+Start at [Guide](https://rh-aiservices-bu.github.io/CAI-Field-Manual-MaaS/maas/) —
 the Overview page maps the phases and links every section.
 
 **Humans** — read the rendered HTML:
@@ -52,15 +51,15 @@ the Overview page maps the phases and links every section.
   with the page URL (or the `content/` path) and what you hit.
   *(Labels and triage conventions TBD for now.)*
 - **Changes** — PRs to `main` are welcome. Guide content lives in
-  `content/guide/`; landing copy in `data/home.yaml`. Run the publication gate
+  `content/maas/`; landing copy in `data/home.yaml`. Run the publication gate
   (below) before opening a PR. Merges to `main` deploy automatically via
   GitHub Actions; repo Settings → Pages → Source must be **GitHub Actions**
   (one-time admin step).
 
 Where things live:
 
-- `hugo.yaml` — site config: title, baseURL, languages, markup, outputs, module imports, `ui.docs_section: guide` (drives the llms.txt Documentation index and the docs-sidebar fallback), the display-option (variant) axis (RHAIE version 3.4/3.5/3.6, default 3.6), `github_repo`/`github_branch`, GA4 placeholder. Chrome defaults (`logo`, `offline_search`, `copyright`, `footer_center_info`, `ui` incl. presets, sidebar/nav chrome) live in the Shell module's `hugo.yaml` and are deep-merged; site values win on conflict.
-- `content/guide/` — the manual: Overview `_index.md`, five sub-sections, and the phase/reference pages
+- `hugo.yaml` — site config: title, baseURL, languages, markup, outputs, module imports, `ui.docs_section: maas` (drives the llms.txt Documentation index and the docs-sidebar fallback), the display-option (variant) axis (RHAIE version 3.4/3.5/3.6, default 3.6), `github_repo`/`github_branch`, GA4 placeholder. Chrome defaults (`logo`, `offline_search`, `copyright`, `footer_center_info`, `ui` incl. presets, sidebar/nav chrome) live in the Shell module's `hugo.yaml` and are deep-merged; site values win on conflict.
+- `content/maas/` — the manual: Overview `_index.md`, five sub-sections, and the phase/reference pages
 - `data/home.yaml` — landing page sections (hero, cards, cta)
 - `content/_index.md` — home page front matter
 - `Docs/` — backlog, content-review notes, upstream-sync questions

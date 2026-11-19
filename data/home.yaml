@@ -8,7 +8,7 @@ hero:
     - words: [{ text: Deploy, govern, verify — where the work happens. }]
   lead: Deploy Red Hat OpenShift AI Models-as-a-Service on OpenShift 4.19+ — Kustomize manifests with status gates, a single automation script, and every command followed by a verify step.
   actions:
-    - { label: Start with the Overview, url: guide/, icon: fa-solid fa-book-open, style: primary }
+    - { label: Start with the Overview, url: maas/, icon: fa-solid fa-book-open, style: primary }
 
 cards:
   eyebrow: Structure
@@ -18,35 +18,35 @@ cards:
     - title: Automated Setup
       desc: One script installs the platform, deploys a model, and verifies every step — with per-phase flags for partial runs.
       icon: fa-solid fa-bolt
-      url: guide/quick-start/
+      url: maas/quick-start/
     - title: Disconnected Setup
       desc: Mirror the operators and images, then install MaaS on a cluster with no external connectivity — Phase 0.
       icon: fa-solid fa-box-open
-      url: guide/disconnected/
+      url: maas/disconnected/
     - title: Installation Guide
       desc: Phases 1–4 — prerequisites, platform configuration, MaaS platform infrastructure, and RHOAI configuration.
       icon: fa-solid fa-download
-      url: guide/installation-guide/
+      url: maas/installation-guide/
     - title: Model Deployment & Verification
       desc: Phases 5–6 — deploy MaaS models with governance, then run the end-to-end verification suite.
       icon: fa-solid fa-rocket
-      url: guide/model-deployment/
+      url: maas/model-deployment/
     - title: Upgrade 3.4 → 3.5
       desc: Platform upgrade steps and post-upgrade troubleshooting — status conditions, new CRDs, and the issues that break upgrades.
       icon: fa-solid fa-arrow-up-right-dots
-      url: guide/upgrade/
+      url: maas/upgrade/
     - title: Reference
       desc: Architecture and request flow, API key security, multi-tenancy, CORS, and model swap — how MaaS works under the hood.
       icon: fa-solid fa-book
-      url: guide/reference/
+      url: maas/reference/
     - title: Demos
       desc: Rate limiting, OIDC, and governance walkthroughs plus the corporate scenario — division-level model governance.
       icon: fa-solid fa-flask
-      url: guide/demos/demos/
+      url: maas/demos/demos/
     - title: Cleanup & Teardown
       desc: Remove the platform, models, and observability stack without breaking the cluster for the next run.
       icon: fa-solid fa-broom
-      url: guide/cleanup/
+      url: maas/cleanup/
 
 cta:
   title: "We want your feedback."

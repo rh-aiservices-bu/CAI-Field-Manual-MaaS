@@ -366,7 +366,7 @@ Skip this phase if `--skip-guide-content` was passed.
 
 These checks verify that commands documented in the Markdown guide pages produce the expected output. If the guide says "run X and you should see Y", we run X and check for Y.
 
-#### Content Check 1: Subscription Names (content/guide/model-deployment/maas-models.md)
+#### Content Check 1: Subscription Names (content/maas/model-deployment/maas-models.md)
 
 The guide documents `simulator-free` and `simulator-premium` subscription names.
 
@@ -377,7 +377,7 @@ SUBS=$(oc get maassubscription -n models-as-a-service --no-headers -o custom-col
 - PASS if output contains `simulator-free` (at minimum - premium may or may not be deployed)
 - FAIL if `simulator-free` is not present (subscription name mismatch bug - was a real bug in v1)
 
-#### Content Check 2: MaaS CRDs (content/guide/installation-guide/rhoai-config.md)
+#### Content Check 2: MaaS CRDs (content/maas/installation-guide/rhoai-config.md)
 
 The guide says `oc get crd | grep maas.opendatahub.io` should show MaaS CRDs.
 
@@ -390,7 +390,7 @@ Expected CRDs: `maasmodelrefs`, `maasauthpolicies`, `maassubscriptions`
 - PASS if all 3 CRDs found
 - FAIL for each missing CRD
 
-#### Content Check 3: Health Endpoint Body (content/guide/model-deployment/verification.md)
+#### Content Check 3: Health Endpoint Body (content/maas/model-deployment/verification.md)
 
 The guide documents that the health endpoint returns `{"status":"healthy"}`.
 
@@ -402,7 +402,7 @@ HEALTH_STATUS=$(echo "$HEALTH_BODY" | jq -r '.status // empty' 2>/dev/null || ec
 - PASS if `HEALTH_STATUS` is `healthy`
 - FAIL if response body is different from documented output
 
-#### Content Check 4: Manual Verification Commands (content/guide/model-deployment/verification.md)
+#### Content Check 4: Manual Verification Commands (content/maas/model-deployment/verification.md)
 
 Run the exact commands from the verification guide and check expected values:
 
@@ -423,7 +423,7 @@ MAAS_READY=$(oc get datasciencecluster default-dsc -o jsonpath='{.status.conditi
 - PASS for each value that matches expected (Gateway=True, each deployment >= 1, ModelsAsServiceReady=True)
 - FAIL for each mismatch
 
-#### Content Check 5: Operator CSV Status (content/guide/installation-guide/prerequisites.md)
+#### Content Check 5: Operator CSV Status (content/maas/installation-guide/prerequisites.md)
 
 The guide documents 4 required operators that must reach Succeeded:
 

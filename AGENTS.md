@@ -54,7 +54,7 @@ contracts 1–3 must pass).
 
 ## Content rules
 
-- Manual lives in `content/guide/` — five sub-sections plus the Overview `_index.md` and the phase/reference pages. Landing copy in `data/home.yaml`.
+- Manual lives in `content/maas/` — five sub-sections plus the Overview `_index.md` and the phase/reference pages. Landing copy in `data/home.yaml`.
 - Display options: variant blocks `{{< variant version "3.5" >}}` and `{{< variant version "3.5 3.6" >}}` (also `"3.4"`). The single declared axis is `version` (options `3.4`/`3.5`/`3.6`/`all`, default `3.6` — validated by `check-contracts.sh`). 36 invocations today. Never delete a variant block to fix a rendering complaint — markdown/llms.txt outputs show ALL variants.
 - **No customize tokens by design** — this site has no `params.customize`. Content uses plain placeholders; `grep -rn customize content` must stay empty. That's why the `td-variant-selector.html` override exists (Shell's `renderStatus()` tail would render ` — reading as  on api`).
 - Author doctrine: the six conventions are chronological information architecture, status-gate verification (every command + verify + literal expected output), inline known issues, variant selector axes, customize tokens, dual consumption. Follow them from `CAI-Field-Manual-Hello-World/_archive/conventions.md` until doctrine is restored.
@@ -76,7 +76,7 @@ Sanctioned extension points in Shell (free to edit there):
 `td-variant-selector.html`, `hooks/head-end.html`, `hooks/body-end.html`,
 the customize shortcodes, `static/js/`, `static/css/`, `assets/scss/_styles_project.scss`.
 
-Local to this repo (free to edit here): `hugo.yaml` (site config: title, baseURL, variants, menus, `ui.docs_section: guide`), `data/home.yaml`, `content/guide/` (the manual), `Docs/` (backlog, upstream-sync notes), `assets/images/` (content-referenced), `static/visualizers/` (4 shortcode invocations). The two local layout overrides above are free to edit here; remove the `td-variant-selector.html` override on the first Shell bump that guards the `reading as` tail.
+Local to this repo (free to edit here): `hugo.yaml` (site config: title, baseURL, variants, menus, `ui.docs_section: maas`), `data/home.yaml`, `content/maas/` (the manual), `Docs/` (backlog, upstream-sync notes), `assets/images/` (content-referenced), `static/visualizers/` (4 shortcode invocations). The two local layout overrides above are free to edit here; remove the `td-variant-selector.html` override on the first Shell bump that guards the `reading as` tail.
 
 ## Verification for JS changes
 
