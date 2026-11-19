@@ -19,11 +19,12 @@ Working list of pending work for this repo. New items go at the bottom of their 
 
 | # | Item | Status | Notes |
 |---|------|--------|-------|
-| After the migration merges to `main`: revert 60c1a1f (remove `migrate-maas-guide` from the Pages workflow trigger) and remove the `migrate-maas-guide` entry from the `github-pages` environment's deployment-branch policy (added 2026-11-02) — otherwise the old branch keeps deploy rights to the production environment | |
+| | | | |
 
 ## Done
 
 | # | Item | Completed | Notes |
 |---|------|-----------|-------|
+| 3 | Cleanup: `migrate-maas-guide` deployment-branch policy removed from `github-pages` environment (added 2026-11-02) | 2026-11-19 | workflow trigger already cleaned in `faa71c9` (`branches: [main]` only); removed stale env allowlist entry `65257099` — only `main` remains |
 | 2 | Repo settings: enable Issues on the repo | 2026-11-02 | `gh api` confirms `has_issues: true`; README issues bullet and landing CTA already correct (restored to HEAD by the user); oink create-issue action now 404s nowhere; pinned `page-urls.html` override removed (issues-disable workaround obsolete) |
 | | | | |
