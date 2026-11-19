@@ -50,15 +50,19 @@ outputs:
   page: [HTML, markdown]
   # LLMSFULL is enabled per section in front matter: the theme emits it only
   # for a top-level section and warns for nested ones, so a site-wide section
-  # output would trip nested sections. content/guide/_index.md opts in.
+  # output would trip nested sections. content/maas/_index.md opts in.
   section: [HTML, RSS, print, markdown]
 
 params:
   github_repo: https://github.com/rh-aiservices-bu/CAI-Field-Manual-MaaS
   github_branch: main
   ui:
-    # Shell's default is field-manual; this site's docs section is guide.
-    docs_section: guide
+    # Shell's default is field-manual; this site's docs section is maas.
+    docs_section: maas
+    # Show the manual-name selector above the left nav (also used as the
+    # drawer header when the sidebar root cover branch hides the mobile Home
+    # row). With a single manual the selector renders as a static row.
+    sidebar_root_menu: true
   # Display options: the page-top selector (layouts/_partials/
   # td-variant-selector.html, called by the docs/baseof.html override)
   # persists these in localStorage and filters content blocks tagged with
