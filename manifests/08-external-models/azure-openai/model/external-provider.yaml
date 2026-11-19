@@ -5,7 +5,7 @@ metadata:
   namespace: external-models
 spec:
   provider: azure-openai
-  endpoint: maas-aoai-7c8wm-eb594.openai.azure.com
+  endpoint: <your-resource>.openai.azure.com
   auth:
     type: apikey
     secretRef:
