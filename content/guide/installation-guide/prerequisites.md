@@ -20,7 +20,7 @@ The versions this guide is written against, for orientation only. This is not a 
 | --- | --- | --- |
 | OpenShift | 4.19+ | 4.22 has been reported to work with Red Hat OpenShift AI 3.4 and 3.5. Disconnected installs are documented against 4.20+ ([Phase 0]({{< relref "guide/disconnected" >}})). For OpenShift 5, which needs a different catalog and channel for two of the operators below, see [Running MaaS on OpenShift 5]({{< relref "guide/openshift5" >}}). |
 | RHOAI | 3.4, 3.5 | Both are covered. Version-specific steps are marked with tabs. |
-| Red Hat Connectivity Link (RHCL) | 1.4.2+ | Any 1.4.x release is generally reported to work with Red Hat OpenShift AI 3.4 and 3.5. The manifests here assume >= 1.4.2, which is what the gateway-scoped AuthPolicy used by [Multi-Tenancy]({{< relref "guide/reference/multi-tenancy" >}}) needs. |
+| Red Hat Connectivity Link (RHCL) | 1.4.2+ | Any 1.4.x release is generally reported to work with Red Hat OpenShift AI 3.4 and 3.5. The manifests here assume >= 1.4.2, which is what the gateway-scoped AuthPolicy used by [Multi-Tenancy]({{< relref "guide/reference/multi-tenancy" >}}) needs. RHCL 1.5.0 (channel `stable-1.5`, with the GA MCP Gateway) was validated with Red Hat OpenShift AI 3.5.2, with two fixes, see [Running MaaS with RHCL 1.5]({{< relref "guide/rhcl-15" >}}). |
 
 On RHCL specifically: 1.3.x does not appear in the matrix for these RHOAI versions, so downgrading to it is probably not a good way out of a problem. For issues seen in earlier RHCL releases, see [KCS 7144055](https://access.redhat.com/solutions/7144055).
 
