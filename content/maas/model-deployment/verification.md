@@ -47,8 +47,6 @@ The `verify.sh` script runs 6 phases:
 
 ## Expected output
 
-When all checks pass, the script prints:
-
 ```text
 =========================================
 MaaS Verification Summary
