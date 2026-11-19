@@ -6,6 +6,6 @@ metadata:
 spec:
   provider: azure-openai
   targetModel: gpt-4-1-mini
-  endpoint: maas-aoai-7c8wm-eb594.openai.azure.com
+  endpoint: <your-resource>.openai.azure.com
   credentialRef:
     name: azure-openai-api-key
