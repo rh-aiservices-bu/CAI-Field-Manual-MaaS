@@ -20,7 +20,7 @@ This phase installs the **optional** observability operators and configuration:
 5. **Loki Operator + Usage Dashboards** (RHOAI 3.5+ only) - log-based per-request usage tracking. The gateway emits structured OTLP access logs with token counts, user identity, and subscription info. Logs are shipped to a LokiStack via an OpenTelemetry Collector. The RHOAI console shows admin and user-scoped usage dashboards under **Observe & monitor**.
 
 > [!TIP]
-> All file paths and `oc apply` commands in this guide are relative to the [CAI-Field-Manual-MaaS](https://github.com/rh-aiservices-bu/CAI-Field-Manual-MaaS) repository root. Make sure you have cloned it and are working from its root directory (see [Getting Started]({{< relref "/guide#getting-started" >}})).
+> All file paths and `oc apply` commands in this guide are relative to the [CAI-Field-Manual-MaaS](https://github.com/rh-aiservices-bu/CAI-Field-Manual-MaaS) repository root. Make sure you have cloned it and are working from its root directory (see [Getting Started]({{< relref "/maas#getting-started" >}})).
 
 > [!IMPORTANT]
 > This guide is not a replacement for the official Red Hat OpenShift AI Models as a Service documentation ([3.5](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/govern_llm_access_with_models-as-a-service/index) | [3.4](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.4/html/govern_llm_access_with_models-as-a-service/index)). It is a companion resource with opinionated Kustomize manifests and automation scripts to accelerate deployment.
@@ -427,4 +427,4 @@ manifests/07-observability/
 
 ## Next step
 
-Proceed to [Phase 8: External Models]({{< relref "/guide/external-models" >}}).
+Proceed to [Phase 8: External Models]({{< relref "/maas/external-models" >}}).

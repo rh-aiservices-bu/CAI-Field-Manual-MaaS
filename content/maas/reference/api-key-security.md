@@ -4,7 +4,7 @@ description: "A security reference for Red Hat OpenShift AI Models as a Service 
 weight: 30
 ---
 
-This page is a security reference for Red Hat OpenShift AI Models as a Service API keys. It covers the full lifecycle of an `sk-oai-*` key -- from cryptographic generation through inference-time validation to expiry and revocation. For the high-level request flow, see [Architecture & Request Flow]({{< relref "guide/reference/architecture" >}}). For pod-by-pod debugging, see [Request Deep Dive]({{< relref "guide/reference/request-deepdive" >}}).
+This page is a security reference for Red Hat OpenShift AI Models as a Service API keys. It covers the full lifecycle of an `sk-oai-*` key -- from cryptographic generation through inference-time validation to expiry and revocation. For the high-level request flow, see [Architecture & Request Flow]({{< relref "maas/reference/architecture" >}}). For pod-by-pod debugging, see [Request Deep Dive]({{< relref "maas/reference/request-deepdive" >}}).
 
 > [!NOTE]
 > This page describes the security internals of the maas-api component. You do not need to understand these details to use Models as a Service, but they are useful for security reviews, incident response, and compliance documentation.
@@ -110,7 +110,7 @@ oc exec -n redhat-ods-applications deploy/postgres -it -- \
 
 ## Validation Flow
 
-Every inference request triggers API key validation on the hot path. The high-level flow is covered in [Architecture: Authorino Validates the API Key]({{< relref "guide/reference/architecture#4-authorino-validates-the-api-key" >}}). This section details the internal steps of `ValidateAPIKey()` inside maas-api.
+Every inference request triggers API key validation on the hot path. The high-level flow is covered in [Architecture: Authorino Validates the API Key]({{< relref "maas/reference/architecture#4-authorino-validates-the-api-key" >}}). This section details the internal steps of `ValidateAPIKey()` inside maas-api.
 
 ```mermaid
 sequenceDiagram
@@ -227,7 +227,7 @@ What works instead:
 | Approach | When to use it |
 | --- | --- |
 | Self-service (intended flow) | The user creates their own key with their own token. This is the design center: keys are self-service, and admins govern through subscriptions and auth policies rather than by minting keys. |
-| Token from the identity provider | With external OIDC ([Phase 9]({{< relref "guide/external-oidc" >}})), an admin who controls the IdP can obtain a token **as** the user (password grant or token exchange in Keycloak) and create the key with it. The key is then owned by the user with the user's groups. This is exactly how the Phase 9 test script and the OIDC demos mint user-owned keys. |
+| Token from the identity provider | With external OIDC ([Phase 9]({{< relref "maas/external-oidc" >}})), an admin who controls the IdP can obtain a token **as** the user (password grant or token exchange in Keycloak) and create the key with it. The key is then owned by the user with the user's groups. This is exactly how the Phase 9 test script and the OIDC demos mint user-owned keys. |
 | ServiceAccount token | For workloads rather than humans: `oc create token <sa> -n <ns>` mints a token whose identity is `system:serviceaccount:<ns>:<sa>`, and the key created with it is owned by the ServiceAccount. See the [Service Account Access demo](https://github.com/rh-aiservices-bu/CAI-Field-Manual-MaaS/tree/main/demo/service-account-access). |
 
 What admins **can** do to other users' keys, per [Owner-or-Admin](#owner-or-admin): view, search, revoke individual keys, and bulk-revoke by username -- just not create them.
@@ -442,7 +442,7 @@ oc exec -n redhat-ods-applications deploy/postgres -it -- \
 
 ## References
 
-- [Architecture & Request Flow]({{< relref "guide/reference/architecture" >}}) -- high-level Models as a Service component overview and request flow
-- [Request Deep Dive]({{< relref "guide/reference/request-deepdive" >}}) -- pod-by-pod debugging with `oc` commands
+- [Architecture & Request Flow]({{< relref "maas/reference/architecture" >}}) -- high-level Models as a Service component overview and request flow
+- [Request Deep Dive]({{< relref "maas/reference/request-deepdive" >}}) -- pod-by-pod debugging with `oc` commands
 - [Upstream: API Key Management](https://opendatahub-io.github.io/models-as-a-service/latest/user-guide/api-key-management/#create-an-api-key)
 - [Upstream: MaaS Architecture](https://opendatahub-io.github.io/models-as-a-service/latest/concepts/architecture/)

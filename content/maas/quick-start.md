@@ -107,7 +107,7 @@ After the base installation, add Keycloak-based OIDC authentication so users can
 ./manifests/09-external-oidc/test-external-oidc.sh
 ```
 
-See [Phase 9: External OIDC Authentication]({{< relref "guide/external-oidc" >}}) for the full manual walkthrough and Bring Your Own IdP instructions.
+See [Phase 9: External OIDC Authentication]({{< relref "maas/external-oidc" >}}) for the full manual walkthrough and Bring Your Own IdP instructions.
 
 ### Verify only
 
@@ -159,7 +159,7 @@ Or with arguments:
 /install-maas --model simulator --with-observability
 ```
 
-See [AI-Assisted Installation]({{< relref "guide/claude-code" >}}) for details.
+See [AI-Assisted Installation]({{< relref "maas/claude-code" >}}) for details.
 
 ## Final Report
 

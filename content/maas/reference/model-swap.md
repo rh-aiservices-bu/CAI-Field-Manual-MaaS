@@ -7,7 +7,7 @@ weight: 60
 This page explains how to replace a model backend in Red Hat OpenShift AI Models as a Service without changing anything from the customer's perspective - same API key, same model ID. The key is the `MaaSModelRef` abstraction layer that decouples the customer-facing API from the actual inference backend. Customers must use the body-based routing (BBR) endpoint (`/v1/chat/completions`) for seamless swaps.
 
 > [!TIP]
-> All file paths and `oc apply` commands in this guide are relative to the [CAI-Field-Manual-MaaS](https://github.com/rh-aiservices-bu/CAI-Field-Manual-MaaS) repository root. Make sure you have cloned it and are working from its root directory (see [Getting Started]({{< relref "/guide#getting-started" >}})).
+> All file paths and `oc apply` commands in this guide are relative to the [CAI-Field-Manual-MaaS](https://github.com/rh-aiservices-bu/CAI-Field-Manual-MaaS) repository root. Make sure you have cloned it and are working from its root directory (see [Getting Started]({{< relref "/maas#getting-started" >}})).
 
 > [!IMPORTANT]
 > This guide is not a replacement for the official Red Hat OpenShift AI Models as a Service documentation ([3.5](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/govern_llm_access_with_models-as-a-service/index) | [3.4](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.4/html/govern_llm_access_with_models-as-a-service/index)). It is a companion resource with opinionated Kustomize manifests and automation scripts to accelerate deployment.
@@ -55,7 +55,7 @@ The MaaSModelRef goes through these phases:
 | **Failed** | Non-recoverable reconciliation error. |
 | **Invalid** | The resource spec is missing or structurally invalid. |
 
-Governance means at least one `MaaSSubscription` AND one `MaaSAuthPolicy` both reference the same MaaSModelRef. Both are required for the model to reach `Ready` phase. These two CRDs are independent - updating one does NOT auto-update the other. For details on keeping them in sync, see [Governance Pairing]({{< relref "/guide/model-deployment/maas-models#governance-pairing" >}}) in Phase 5.
+Governance means at least one `MaaSSubscription` AND one `MaaSAuthPolicy` both reference the same MaaSModelRef. Both are required for the model to reach `Ready` phase. These two CRDs are independent - updating one does NOT auto-update the other. For details on keeping them in sync, see [Governance Pairing]({{< relref "/maas/model-deployment/maas-models#governance-pairing" >}}) in Phase 5.
 
 ## What Changes vs What Stays the Same
 
@@ -76,7 +76,7 @@ Governance means at least one `MaaSSubscription` AND one `MaaSAuthPolicy` both r
 
 ## Prerequisites
 
-- [Phases 1]({{< relref "/guide/installation-guide/prerequisites" >}})-[5]({{< relref "/guide/model-deployment/maas-models" >}}) completed (Red Hat OpenShift AI installed, Models as a Service platform running, `llm` namespace created)
+- [Phases 1]({{< relref "/maas/installation-guide/prerequisites" >}})-[5]({{< relref "/maas/model-deployment/maas-models" >}}) completed (Red Hat OpenShift AI installed, Models as a Service platform running, `llm` namespace created)
 - Admin access to the model namespace and `models-as-a-service` namespace
 
 ## Swap Procedure
@@ -86,7 +86,7 @@ This procedure walks through the full swap lifecycle using the provided Qwen 3.6
 The scenario: you have a model called `qwen-36` registered with MaaS through a MaaSModelRef called `qwen-coder`. You want to replace it with `qwen-38` without affecting customers.
 
 > [!TIP]
-> If you already have a model deployed from [Phase 5]({{< relref "/guide/model-deployment/maas-models" >}}), you can skip the original model deployment and adapt the steps to your existing model names.
+> If you already have a model deployed from [Phase 5]({{< relref "/maas/model-deployment/maas-models" >}}), you can skip the original model deployment and adapt the steps to your existing model names.
 
 ### Step 1: Deploy the Original Model
 
@@ -301,6 +301,6 @@ For a real swap with GPU models, replace the container image, model URI, and res
 
 ## References
 
-- [Architecture & Request Flow]({{< relref "/guide/reference/architecture" >}}) - full Models as a Service component overview and request lifecycle
-- [Phase 5: Model Deployment]({{< relref "/guide/model-deployment/maas-models" >}}) - how to deploy a model from scratch
+- [Architecture & Request Flow]({{< relref "/maas/reference/architecture" >}}) - full Models as a Service component overview and request lifecycle
+- [Phase 5: Model Deployment]({{< relref "/maas/model-deployment/maas-models" >}}) - how to deploy a model from scratch
 - [Upstream MaaS Documentation](https://opendatahub-io.github.io/models-as-a-service/latest/)

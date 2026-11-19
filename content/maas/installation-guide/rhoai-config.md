@@ -4,10 +4,10 @@ description: "Configures the RHOAI operator instances to enable Models-as-a-Serv
 weight: 40
 ---
 
-Configure the RHOAI operator instances to enable Models-as-a-Service. Because the PostgreSQL database and `maas-db-config` secret already exist ([Phase 3]({{< relref "/guide/installation-guide/maas-platform" >}})), the `maas-api` deployment will start healthy immediately.
+Configure the RHOAI operator instances to enable Models-as-a-Service. Because the PostgreSQL database and `maas-db-config` secret already exist ([Phase 3]({{< relref "/maas/installation-guide/maas-platform" >}})), the `maas-api` deployment will start healthy immediately.
 
 > [!TIP]
-> All file paths and `oc apply` commands in this guide are relative to the [CAI-Field-Manual-MaaS](https://github.com/rh-aiservices-bu/CAI-Field-Manual-MaaS) repository root. Make sure you have cloned it and are working from its root directory (see [Getting Started]({{< relref "/guide#getting-started" >}})).
+> All file paths and `oc apply` commands in this guide are relative to the [CAI-Field-Manual-MaaS](https://github.com/rh-aiservices-bu/CAI-Field-Manual-MaaS) repository root. Make sure you have cloned it and are working from its root directory (see [Getting Started]({{< relref "/maas#getting-started" >}})).
 
 > [!IMPORTANT]
 > This guide is not a replacement for the official Red Hat OpenShift AI Models as a Service documentation ([3.5](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/govern_llm_access_with_models-as-a-service/index) | [3.4](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.4/html/govern_llm_access_with_models-as-a-service/index)). It is a companion resource with opinionated Kustomize manifests and automation scripts to accelerate deployment.
@@ -15,7 +15,7 @@ Configure the RHOAI operator instances to enable Models-as-a-Service. Because th
 ## Prerequisites
 
 * RHOAI operator is installed and CSV is in `Succeeded` state
-* [Phase 3]({{< relref "/guide/installation-guide/maas-platform" >}}) (MaaS platform) is completed — PostgreSQL is running and `maas-db-config` secret exists
+* [Phase 3]({{< relref "/maas/installation-guide/maas-platform" >}}) (MaaS platform) is completed — PostgreSQL is running and `maas-db-config` secret exists
 
 Verify the operator is ready before proceeding:
 
@@ -65,7 +65,7 @@ oc apply -f manifests/04-rhoai-config/datasciencecluster-34.yaml
 ```
 
 > [!WARNING]
-> The `kserve.modelsAsService` DSC path is deprecated in RHOAI 3.5 and replaced by `aigateway.modelsAsAService`. Without `aigateway` set to `Managed`, regular (non-admin) users will not see the **AI asset endpoints** page in the Dashboard. If upgrading from 3.4, see [Platform Upgrade (3.4 -> 3.5)]({{< relref "/guide/upgrade/platform-upgrade" >}}).
+> The `kserve.modelsAsService` DSC path is deprecated in RHOAI 3.5 and replaced by `aigateway.modelsAsAService`. Without `aigateway` set to `Managed`, regular (non-admin) users will not see the **AI asset endpoints** page in the Dashboard. If upgrading from 3.4, see [Platform Upgrade (3.4 -> 3.5)]({{< relref "/maas/upgrade/platform-upgrade" >}}).
 {{< /variant >}}
 
 Apply the GPU HardwareProfile so RHOAI properly schedules GPU workloads:
@@ -157,7 +157,7 @@ oc get tenant default-tenant -n models-as-a-service
 ```
 
 > [!NOTE]
-> The `default-tenant` CR may show either `Ready=True` (reason `Reconciled`) or `Ready=False` (reason `DeploymentsNotReady`) at this stage. Both are normal - if it shows `Ready=False`, it will become `Ready=True` after a model is deployed in [Phase 5]({{< relref "/guide/model-deployment/maas-models" >}}).
+> The `default-tenant` CR may show either `Ready=True` (reason `Reconciled`) or `Ready=False` (reason `DeploymentsNotReady`) at this stage. Both are normal - if it shows `Ready=False`, it will become `Ready=True` after a model is deployed in [Phase 5]({{< relref "/maas/model-deployment/maas-models" >}}).
 {{< /variant >}}
 
 ### MaaS health endpoint
@@ -183,7 +183,7 @@ Verify the following flags are set:
 * `externalModels: true` - enables the **External models** tab under **AI hub > Models > Deployments** in the Dashboard, where administrators can view deployed external models, their providers, and connection details
 
 > [!IMPORTANT]
-> The **External models** tab is a **Technology Preview** feature in RHOAI 3.5. Technology Preview features are not supported with Red Hat production service level agreements (SLAs) and might not be functionally complete. The external models functionality itself (CRDs, CLI, gateway routing) is fully supported (GA). For CLI-based external model management, see [Phase 8: External Models]({{< relref "/guide/external-models" >}}).
+> The **External models** tab is a **Technology Preview** feature in RHOAI 3.5. Technology Preview features are not supported with Red Hat production service level agreements (SLAs) and might not be functionally complete. The external models functionality itself (CRDs, CLI, gateway routing) is fully supported (GA). For CLI-based external model management, see [Phase 8: External Models]({{< relref "/maas/external-models" >}}).
 
 > [!NOTE]
 > The `maasAuthPolicies` flag was removed from the OdhDashboardConfig CRD in RHOAI 3.5. Do not include it in the manifest - the admission webhook will reject it.
@@ -236,4 +236,4 @@ manifests/04-rhoai-config/
 
 ## Next step
 
-Proceed to [Phase 5: Model Deployment]({{< relref "/guide/model-deployment/maas-models" >}}).
+Proceed to [Phase 5: Model Deployment]({{< relref "/maas/model-deployment/maas-models" >}}).

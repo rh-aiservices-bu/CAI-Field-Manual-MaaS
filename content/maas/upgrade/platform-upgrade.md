@@ -42,7 +42,7 @@ The 3.5 release restructures how Models as a Service is configured in the DataSc
 | **ExternalModel API** | `maas.opendatahub.io/v1alpha1` | `inference.opendatahub.io/v1alpha1` (ExternalProvider) |
 | **Dashboard config** | `maasAuthPolicies` flag supported | `maasAuthPolicies` rejected by admission webhook |
 
-For the full list of structural changes (status conditions, new CRDs, Tenant CR deprecation), see the [What Changes]({{< relref "/guide/upgrade/post-upgrade-troubleshooting#what-changes-in-the-3-4-3-5-upgrade" >}}) table in the troubleshooting page.
+For the full list of structural changes (status conditions, new CRDs, Tenant CR deprecation), see the [What Changes]({{< relref "/maas/upgrade/post-upgrade-troubleshooting#what-changes-in-the-3-4-3-5-upgrade" >}}) table in the troubleshooting page.
 
 ## Step 1: Back Up Current State
 
@@ -89,7 +89,7 @@ oc patch datasciencecluster default-dsc --type=merge \
 ```
 
 > [!IMPORTANT]
-> Do **not** leave `llamastackoperator` as `Managed` (and do not just omit it - on some clusters the field already defaults to `Managed`). Reproduced and confirmed on a live 3.5.0 cluster: having both `llamastackoperator: Managed` and `ogx: Managed` at the same time causes the operator to reject the `ogx` module with `"LlamaStackOperator is set to Managed; it has been deprecated, set it to Removed before enabling OGX"`. That error aborts the **entire** module-provisioning batch at runlevel 32 - which also includes `aigateway` and `mlflowoperator`. The practical symptom is not just a missing Playground tab: `aigateway`'s CRDs never get installed, `maas-api` never deploys, `ModelsAsAServiceReady` stays `False`, and applying `MaaSModelRef` fails with `no matches for kind "MaaSModelRef"` even though `modelsAsAService` shows `Managed`. See [Issue 14]({{< relref "/guide/upgrade/post-upgrade-troubleshooting#issue-14" >}}) for the full diagnosis and fix if you already hit this.
+> Do **not** leave `llamastackoperator` as `Managed` (and do not just omit it - on some clusters the field already defaults to `Managed`). Reproduced and confirmed on a live 3.5.0 cluster: having both `llamastackoperator: Managed` and `ogx: Managed` at the same time causes the operator to reject the `ogx` module with `"LlamaStackOperator is set to Managed; it has been deprecated, set it to Removed before enabling OGX"`. That error aborts the **entire** module-provisioning batch at runlevel 32 - which also includes `aigateway` and `mlflowoperator`. The practical symptom is not just a missing Playground tab: `aigateway`'s CRDs never get installed, `maas-api` never deploys, `ModelsAsAServiceReady` stays `False`, and applying `MaaSModelRef` fails with `no matches for kind "MaaSModelRef"` even though `modelsAsAService` shows `Managed`. See [Issue 14]({{< relref "/maas/upgrade/post-upgrade-troubleshooting#issue-14" >}}) for the full diagnosis and fix if you already hit this.
 
 > [!WARNING]
 > On some RHOAI 3.5.0 installations, the OGX CRD may still not be available after removing `llamastackoperator`. If the DSC reports `OGXReady: False` with `no matches for kind "OGX"`, set `ogx` back to `Removed` to unblock the DSC - this one genuinely only affects the AI Playground feature, not Models as a Service.
@@ -139,7 +139,7 @@ oc get datasciencecluster default-dsc -o jsonpath='{range .status.conditions[*]}
 ```
 
 > [!TIP]
-> The MCP Lifecycle Operator (new in 3.5) is a common blocker - it can OOMKill on clusters with many secrets. See [Issue 1: MCP Lifecycle Operator OOMKill]({{< relref "/guide/upgrade/post-upgrade-troubleshooting#issue-1" >}}) for the workaround.
+> The MCP Lifecycle Operator (new in 3.5) is a common blocker - it can OOMKill on clusters with many secrets. See [Issue 1: MCP Lifecycle Operator OOMKill]({{< relref "/maas/upgrade/post-upgrade-troubleshooting#issue-1" >}}) for the workaround.
 
 ## Step 6: Verify Namespace and Secrets
 
@@ -185,7 +185,7 @@ Verify the HTTPRoutes are accepted:
 oc get httproute -n redhat-ai-gateway-infra -o wide
 ```
 
-If HTTPRoutes show `NotAccepted`, see [Issue 3: MaaS Gateway Namespace Label]({{< relref "/guide/upgrade/post-upgrade-troubleshooting#issue-3" >}}) for diagnosis steps.
+If HTTPRoutes show `NotAccepted`, see [Issue 3: MaaS Gateway Namespace Label]({{< relref "/maas/upgrade/post-upgrade-troubleshooting#issue-3" >}}) for diagnosis steps.
 
 ## Step 8: Migrate LLMInferenceServices to Body-Based Routing (BBR) {#llmisvc-migration}
 
@@ -287,7 +287,7 @@ oc delete externalmodel.maas.opendatahub.io openai -n <model-namespace>
 ```
 
 > [!WARNING]
-> The 3.5 `ExternalProvider` CRD has a stricter validation regex on `spec.auth.secretRef.name` that does not allow dots. If your secret names contain dots (e.g. `glm5.1-w8a8-key`), you must rename them first. See [Issue 2: ExternalModel Migration - Secret Names with Dots]({{< relref "/guide/upgrade/post-upgrade-troubleshooting#issue-2" >}}) for details.
+> The 3.5 `ExternalProvider` CRD has a stricter validation regex on `spec.auth.secretRef.name` that does not allow dots. If your secret names contain dots (e.g. `glm5.1-w8a8-key`), you must rename them first. See [Issue 2: ExternalModel Migration - Secret Names with Dots]({{< relref "/maas/upgrade/post-upgrade-troubleshooting#issue-2" >}}) for details.
 
 ## Step 10: Update OdhDashboardConfig
 
@@ -324,17 +324,17 @@ Run through these checks to confirm the migration is complete:
 
 ## Troubleshooting
 
-If you hit issues during migration, see the [Post-Upgrade Troubleshooting]({{< relref "/guide/upgrade/post-upgrade-troubleshooting" >}}) page. Here is a quick mapping from migration symptoms to known issues:
+If you hit issues during migration, see the [Post-Upgrade Troubleshooting]({{< relref "/maas/upgrade/post-upgrade-troubleshooting" >}}) page. Here is a quick mapping from migration symptoms to known issues:
 
 | Symptom During Migration | See |
 | --- | --- |
-| DSC stuck not-ready after patching | [Issue 1]({{< relref "/guide/upgrade/post-upgrade-troubleshooting#issue-1" >}}) (MCP Lifecycle Operator OOM) |
-| Dashboard shows "Error loading components" | [Issue 3]({{< relref "/guide/upgrade/post-upgrade-troubleshooting#issue-3" >}}) (namespace label) or [Issue 4]({{< relref "/guide/upgrade/post-upgrade-troubleshooting#issue-4" >}}) (hostname discovery) |
-| maas-api returns 500 on `/v1/tenants` | [Issue 4]({{< relref "/guide/upgrade/post-upgrade-troubleshooting#issue-4" >}}) (gateway hostname discovery) |
-| ExternalProvider creation fails on secret name | [Issue 2]({{< relref "/guide/upgrade/post-upgrade-troubleshooting#issue-2" >}}) (dotted secret names) |
-| HTTPRoutes show `NotAccepted` | [Issue 3]({{< relref "/guide/upgrade/post-upgrade-troubleshooting#issue-3" >}}) (namespace label) |
-| HTTP 500/503 under load after migration | [Issue 7]({{< relref "/guide/upgrade/post-upgrade-troubleshooting#issue-7" >}}) (WASM auth timeout) |
-| HTTP 429 Too Many Requests | [Issue 9]({{< relref "/guide/upgrade/post-upgrade-troubleshooting#issue-9" >}}) (token rate limit default) |
+| DSC stuck not-ready after patching | [Issue 1]({{< relref "/maas/upgrade/post-upgrade-troubleshooting#issue-1" >}}) (MCP Lifecycle Operator OOM) |
+| Dashboard shows "Error loading components" | [Issue 3]({{< relref "/maas/upgrade/post-upgrade-troubleshooting#issue-3" >}}) (namespace label) or [Issue 4]({{< relref "/maas/upgrade/post-upgrade-troubleshooting#issue-4" >}}) (hostname discovery) |
+| maas-api returns 500 on `/v1/tenants` | [Issue 4]({{< relref "/maas/upgrade/post-upgrade-troubleshooting#issue-4" >}}) (gateway hostname discovery) |
+| ExternalProvider creation fails on secret name | [Issue 2]({{< relref "/maas/upgrade/post-upgrade-troubleshooting#issue-2" >}}) (dotted secret names) |
+| HTTPRoutes show `NotAccepted` | [Issue 3]({{< relref "/maas/upgrade/post-upgrade-troubleshooting#issue-3" >}}) (namespace label) |
+| HTTP 500/503 under load after migration | [Issue 7]({{< relref "/maas/upgrade/post-upgrade-troubleshooting#issue-7" >}}) (WASM auth timeout) |
+| HTTP 429 Too Many Requests | [Issue 9]({{< relref "/maas/upgrade/post-upgrade-troubleshooting#issue-9" >}}) (token rate limit default) |
 
 ## References
 

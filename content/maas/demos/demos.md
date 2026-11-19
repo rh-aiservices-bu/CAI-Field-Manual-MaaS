@@ -4,12 +4,12 @@ description: Hands-on walkthroughs that go deeper on the subscription, access co
 weight: 10
 ---
 
-Hands-on walkthroughs that go deeper on the subscription, access control, and authentication topics covered in [Phase 5]({{< relref "guide/model-deployment/maas-models" >}}) and [Phase 9]({{< relref "guide/external-oidc" >}}). Each scenario has setup/run/cleanup scripts and a presenter talk track.
+Hands-on walkthroughs that go deeper on the subscription, access control, and authentication topics covered in [Phase 5]({{< relref "maas/model-deployment/maas-models" >}}) and [Phase 9]({{< relref "maas/external-oidc" >}}). Each scenario has setup/run/cleanup scripts and a presenter talk track.
 
 ## Prerequisites
 
-* Complete the guide through [Phase 5]({{< relref "guide/model-deployment/maas-models" >}}) with at least the simulator model deployed
-* For the OIDC, JWKS Cache, and Subscription Priority demos, also complete [Phase 9]({{< relref "guide/external-oidc" >}}) (they use Keycloak identities)
+* Complete the guide through [Phase 5]({{< relref "maas/model-deployment/maas-models" >}}) with at least the simulator model deployed
+* For the OIDC, JWKS Cache, and Subscription Priority demos, also complete [Phase 9]({{< relref "maas/external-oidc" >}}) (they use Keycloak identities)
 
 Deploy the simulator if not already done:
 
@@ -32,9 +32,9 @@ Expected result: 16 passed, 0 failed. The script also warms up `maas-api` to abs
 | Demo | What it shows | Link |
 | --- | --- | --- |
 | User-Level Rate Limiting | Assign MaaSSubscription tiers to groups and individual users. Shows how `priority` resolves overlaps when a user belongs to multiple groups. | [README](https://github.com/rh-aiservices-bu/CAI-Field-Manual-MaaS/tree/main/demo/user-level-rate-limiting) |
-| Subscription Priority | Proves entitlement is selected, not accumulated. A user in two groups gets the higher-priority tier, not the sum. Per-user subscriptions can cap below group tiers. _Requires [Phase 9]({{< relref "guide/external-oidc" >}}) (Keycloak)._ | [README](https://github.com/rh-aiservices-bu/CAI-Field-Manual-MaaS/tree/main/demo/subscription-priority) |
+| Subscription Priority | Proves entitlement is selected, not accumulated. A user in two groups gets the higher-priority tier, not the sum. Per-user subscriptions can cap below group tiers. _Requires [Phase 9]({{< relref "maas/external-oidc" >}}) (Keycloak)._ | [README](https://github.com/rh-aiservices-bu/CAI-Field-Manual-MaaS/tree/main/demo/subscription-priority) |
 | Service Account Access | In-cluster workload calls a model with its ServiceAccount token via TokenReview. No API key or secret needed. Access per namespace, rate limits per workload. | [README](https://github.com/rh-aiservices-bu/CAI-Field-Manual-MaaS/tree/main/demo/service-account-access) |
-| Corporate Scenario | Division-level model governance: three divisions (Sales, Engineering, Products), on-prem + cloud models, differentiated access and rate limits. Demonstrates the full CIO-to-deployment policy lifecycle. **Recommended starting point for enterprise demos.** | [Full Guide]({{< relref "guide/demos/corporate-scenario" >}}) / [Scripts](https://github.com/rh-aiservices-bu/CAI-Field-Manual-MaaS/tree/main/demo/corporate-scenario) |
+| Corporate Scenario | Division-level model governance: three divisions (Sales, Engineering, Products), on-prem + cloud models, differentiated access and rate limits. Demonstrates the full CIO-to-deployment policy lifecycle. **Recommended starting point for enterprise demos.** | [Full Guide]({{< relref "maas/demos/corporate-scenario" >}}) / [Scripts](https://github.com/rh-aiservices-bu/CAI-Field-Manual-MaaS/tree/main/demo/corporate-scenario) |
 
 ## OIDC & Token Validation (Phase 9)
 

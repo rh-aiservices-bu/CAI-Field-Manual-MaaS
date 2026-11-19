@@ -7,7 +7,7 @@ weight: 20
 End-to-end verification of a MaaS (Models as a Service) deployment on OpenShift.
 
 > [!TIP]
-> All file paths and `oc apply` commands in this guide are relative to the [CAI-Field-Manual-MaaS](https://github.com/rh-aiservices-bu/CAI-Field-Manual-MaaS) repository root. Make sure you have cloned it and are working from its root directory (see [Getting Started]({{< relref "/guide#getting-started" >}})).
+> All file paths and `oc apply` commands in this guide are relative to the [CAI-Field-Manual-MaaS](https://github.com/rh-aiservices-bu/CAI-Field-Manual-MaaS) repository root. Make sure you have cloned it and are working from its root directory (see [Getting Started]({{< relref "/maas#getting-started" >}})).
 
 > [!IMPORTANT]
 > This guide is not a replacement for the official Red Hat OpenShift AI Models as a Service documentation ([3.5](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/govern_llm_access_with_models-as-a-service/index) | [3.4](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.4/html/govern_llm_access_with_models-as-a-service/index)). It is a companion resource with opinionated Kustomize manifests and automation scripts to accelerate deployment.
@@ -32,7 +32,7 @@ The `verify.sh` script runs 6 phases:
 ## Usage
 
 > [!NOTE]
-> The verification script deploys a temporary simulator model and removes it during the cleanup phase. Resources that already existed before the run - such as a simulator you deployed in [Phase 5]({{< relref "/guide/model-deployment/maas-models" >}}) - are detected and kept. Use `--no-cleanup` to keep even the script's own test resources, and `--cleanup-only` to remove all test resources including a pre-existing simulator.
+> The verification script deploys a temporary simulator model and removes it during the cleanup phase. Resources that already existed before the run - such as a simulator you deployed in [Phase 5]({{< relref "/maas/model-deployment/maas-models" >}}) - are detected and kept. Use `--no-cleanup` to keep even the script's own test resources, and `--cleanup-only` to remove all test resources including a pre-existing simulator.
 
 ```sh
 # Full verification (deploy, test, cleanup)
@@ -183,7 +183,7 @@ If the verification script fails at Phase 1 (health endpoint unreachable) or Pha
 oc get pods -n openshift-ingress | grep maas-default-gateway
 ```
 
-If the pod shows `CrashLoopBackOff` with multiple restarts, the Kuadrant Wasm extensions may exceed the default `1Gi` memory limit. Apply the ConfigMap fix from [Phase 2 Step 5b]({{< relref "/guide/installation-guide/platform-config#gateway-pod-oomkill-prevention" >}}):
+If the pod shows `CrashLoopBackOff` with multiple restarts, the Kuadrant Wasm extensions may exceed the default `1Gi` memory limit. Apply the ConfigMap fix from [Phase 2 Step 5b]({{< relref "/maas/installation-guide/platform-config#gateway-pod-oomkill-prevention" >}}):
 
 ```sh
 oc apply -f manifests/02-platform-config/gateway-resources.yaml
@@ -229,4 +229,4 @@ manifests/06-verification/
 
 ## Next step
 
-Proceed to [Phase 7: Observability]({{< relref "/guide/observability" >}}).
+Proceed to [Phase 7: Observability]({{< relref "/maas/observability" >}}).

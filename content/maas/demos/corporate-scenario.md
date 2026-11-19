@@ -9,7 +9,7 @@ A realistic enterprise demo showing how a CIO rolls out Models as a Service acro
 This is the recommended starting point when you want to show Models as a Service to stakeholders who care about governance, cost control, and multi-team model access.
 
 > [!TIP]
-> All file paths and `oc apply` commands in this guide are relative to the [CAI-Field-Manual-MaaS](https://github.com/rh-aiservices-bu/CAI-Field-Manual-MaaS) repository root. Make sure you have cloned it and are working from its root directory (see [Getting Started]({{< relref "guide#getting-started" >}})).
+> All file paths and `oc apply` commands in this guide are relative to the [CAI-Field-Manual-MaaS](https://github.com/rh-aiservices-bu/CAI-Field-Manual-MaaS) repository root. Make sure you have cloned it and are working from its root directory (see [Getting Started]({{< relref "maas#getting-started" >}})).
 
 ## The scenario
 
@@ -27,7 +27,7 @@ Each division gets ONE subscription covering all their allowed models. One API k
 
 ## Prerequisites
 
-* Complete the guide through [Phase 5]({{< relref "guide/model-deployment/maas-models" >}}) with at least the simulator model deployed
+* Complete the guide through [Phase 5]({{< relref "maas/model-deployment/maas-models" >}}) with at least the simulator model deployed
 * `oc` logged into the cluster as cluster-admin
 * `htpasswd`, `curl`, `jq` available on PATH
 

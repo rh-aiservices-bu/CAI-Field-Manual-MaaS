@@ -4,7 +4,7 @@ description: Skill definitions that provide AI-assisted MaaS installation and en
 weight: 140
 ---
 
-This repository includes skill definitions that provide AI-assisted MaaS installation and end-to-end verification. The `/install-maas` skill wraps the same `setup-maas.sh` script used in the [Automated Setup]({{< relref "guide/quick-start" >}}), while the `/verify-guide` skill runs a full verification pass against a live cluster - covering installation, the 15-point E2E test suite, blind-spot regression checks, and guide content validation.
+This repository includes skill definitions that provide AI-assisted MaaS installation and end-to-end verification. The `/install-maas` skill wraps the same `setup-maas.sh` script used in the [Automated Setup]({{< relref "maas/quick-start" >}}), while the `/verify-guide` skill runs a full verification pass against a live cluster - covering installation, the 15-point E2E test suite, blind-spot regression checks, and guide content validation.
 
 The skills work with any AI coding tool that supports skill definitions:
 
@@ -14,7 +14,7 @@ The skills work with any AI coding tool that supports skill definitions:
 - Other AI coding agents with skill support
 
 > [!TIP]
-> All file paths and `oc apply` commands in this guide are relative to the [CAI-Field-Manual-MaaS](https://github.com/rh-aiservices-bu/CAI-Field-Manual-MaaS) repository root. Make sure you have cloned it and are working from its root directory (see [Getting Started]({{< relref "guide#getting-started" >}})).
+> All file paths and `oc apply` commands in this guide are relative to the [CAI-Field-Manual-MaaS](https://github.com/rh-aiservices-bu/CAI-Field-Manual-MaaS) repository root. Make sure you have cloned it and are working from its root directory (see [Getting Started]({{< relref "maas#getting-started" >}})).
 
 > [!IMPORTANT]
 > This guide is not a replacement for the official Red Hat OpenShift AI Models as a Service documentation ([3.5](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/govern_llm_access_with_models-as-a-service/index) | [3.4](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.4/html/govern_llm_access_with_models-as-a-service/index)). It is a companion resource with opinionated Kustomize manifests and automation scripts to accelerate deployment.

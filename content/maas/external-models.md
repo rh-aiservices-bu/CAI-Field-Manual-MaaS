@@ -5,7 +5,7 @@ weight: 70
 ---
 
 > [!NOTE]
-> This phase requires a completed MaaS installation (through [Phase 4]({{< relref "/guide/installation-guide/rhoai-config" >}})) and at least one local model deployed ([Phase 5]({{< relref "/guide/model-deployment/maas-models" >}})) to validate the gateway is functional.
+> This phase requires a completed MaaS installation (through [Phase 4]({{< relref "/maas/installation-guide/rhoai-config" >}})) and at least one local model deployed ([Phase 5]({{< relref "/maas/model-deployment/maas-models" >}})) to validate the gateway is functional.
 
 > [!WARNING]
 > This phase is NOT compatible with disconnected/air-gapped environments. External models require internet access to reach third-party APIs (OpenAI, Bedrock, Gemini, Anthropic, Azure OpenAI). If you are running in disconnected mode, skip this phase entirely.
@@ -13,7 +13,7 @@ weight: 70
 The `ExternalModel` CRD lets you expose third-party LLM APIs (OpenAI, AWS Bedrock, Google Gemini, Anthropic, Azure OpenAI, etc.) through the MaaS gateway. External models get the same API key management, authentication, rate limiting, and usage tracking as locally-served models - your consumers use a single gateway endpoint regardless of where the model runs.
 
 > [!TIP]
-> All file paths and `oc apply` commands in this guide are relative to the [CAI-Field-Manual-MaaS](https://github.com/rh-aiservices-bu/CAI-Field-Manual-MaaS) repository root. Make sure you have cloned it and are working from its root directory (see [Getting Started]({{< relref "/guide#getting-started" >}})).
+> All file paths and `oc apply` commands in this guide are relative to the [CAI-Field-Manual-MaaS](https://github.com/rh-aiservices-bu/CAI-Field-Manual-MaaS) repository root. Make sure you have cloned it and are working from its root directory (see [Getting Started]({{< relref "/maas#getting-started" >}})).
 
 > [!IMPORTANT]
 > This guide is not a replacement for the official Red Hat OpenShift AI Models as a Service documentation ([3.5](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/govern_llm_access_with_models-as-a-service/index) | [3.4](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.4/html/govern_llm_access_with_models-as-a-service/index)). It is a companion resource with opinionated Kustomize manifests and automation scripts to accelerate deployment.
@@ -225,7 +225,7 @@ The `--external-model-provider` flag selects which provider manifests to deploy 
 > [!IMPORTANT]
 > The **External models** tab in the RHOAI Dashboard is a **Technology Preview** feature in RHOAI 3.5. Technology Preview features are not supported with Red Hat production service level agreements (SLAs) and might not be functionally complete. The CLI workflow documented above (Steps 1-3) is the fully supported (GA) method for managing external models.
 
-The Dashboard provides an admin-only view of external models deployed through the CLI. This tab is enabled by the `externalModels: true` flag in the OdhDashboardConfig (see [Phase 4: Check OdhDashboardConfig flags]({{< relref "/guide/installation-guide/rhoai-config#check-odhdashboardconfig-flags" >}})).
+The Dashboard provides an admin-only view of external models deployed through the CLI. This tab is enabled by the `externalModels: true` flag in the OdhDashboardConfig (see [Phase 4: Check OdhDashboardConfig flags]({{< relref "/maas/installation-guide/rhoai-config#check-odhdashboardconfig-flags" >}})).
 
 Navigate to **AI hub > Models > Deployments** and select the **External models** tab:
 
@@ -984,7 +984,7 @@ On RHOAI 3.4, the BBR `openai` provider hardcodes the upstream path to `/v1/chat
 
 External model calls through the gateway can return HTTP 500 under concurrent load even though the model backend is healthy. The signature: a 23-byte error body, an empty upstream host in the gateway access log, and a response time close to 200ms. This means the Kuadrant WASM plugin timed out waiting for Authorino to authorize the request (default: 200ms, `failureMode: deny`).
 
-The fix is to increase `AUTH_SERVICE_TIMEOUT` on the RHCL operator Subscription. See [Issue 7: WASM Auth Timeout Under Load]({{< relref "/guide/upgrade/post-upgrade-troubleshooting#issue-7" >}}) in the troubleshooting guide for diagnosis steps and the workaround.
+The fix is to increase `AUTH_SERVICE_TIMEOUT` on the RHCL operator Subscription. See [Issue 7: WASM Auth Timeout Under Load]({{< relref "/maas/upgrade/post-upgrade-troubleshooting#issue-7" >}}) in the troubleshooting guide for diagnosis steps and the workaround.
 
 ### Anthropic Messages API - no token counting or rate limiting (RHOAIENG-93984)
 
@@ -1090,4 +1090,4 @@ The `provider` field in the ExternalModel spec maps to a BBR payload translator.
 
 ## Next step
 
-Proceed to [Architecture & Request Flow]({{< relref "/guide/reference/architecture" >}}).
+Proceed to [Architecture & Request Flow]({{< relref "/maas/reference/architecture" >}}).

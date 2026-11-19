@@ -7,7 +7,7 @@ weight: 30
 Additional steps to deploy Red Hat OpenShift AI Models as a Service on an air-gapped (disconnected) OpenShift cluster.
 
 > [!IMPORTANT]
-> This phase is only needed for disconnected environments where the cluster has no internet access. For connected clusters, skip directly to [Phase 1]({{< relref "guide/installation-guide/prerequisites" >}}).
+> This phase is only needed for disconnected environments where the cluster has no internet access. For connected clusters, skip directly to [Phase 1]({{< relref "maas/installation-guide/prerequisites" >}}).
 
 ## Overview
 
@@ -618,7 +618,7 @@ curl -sk --resolve "maas.${CLUSTER_DOMAIN}:${NODEPORT}:${NODE_IP}" \
 
 ## Next steps
 
-Once the MaaS operators are available and (optionally) a GPU node is ready, proceed to [Phase 1: Prerequisites]({{< relref "guide/installation-guide/prerequisites" >}}) and run the guide normally. Use the `DISCONNECTED=true` flag with `setup-maas.sh` to automatically skip Phase 8 (External Models) and use the disconnected simulator variant:
+Once the MaaS operators are available and (optionally) a GPU node is ready, proceed to [Phase 1: Prerequisites]({{< relref "maas/installation-guide/prerequisites" >}}) and run the guide normally. Use the `DISCONNECTED=true` flag with `setup-maas.sh` to automatically skip Phase 8 (External Models) and use the disconnected simulator variant:
 
 ```sh
 DISCONNECTED=true ./scripts/setup-maas.sh

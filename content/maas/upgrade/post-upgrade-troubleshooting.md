@@ -10,7 +10,7 @@ This page covers known issues and workarounds for customers who upgraded Red Hat
 > This guide is not a replacement for the official Red Hat OpenShift AI [3.5 Release Notes - Known Issues](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/known-issues_relnotes). Always check the release notes for the latest updates.
 
 > [!TIP]
-> For step-by-step migration instructions, see [Platform Upgrade (3.4 -> 3.5)]({{< relref "/guide/upgrade/platform-upgrade" >}}). This page covers troubleshooting for issues that occur during or after the migration.
+> For step-by-step migration instructions, see [Platform Upgrade (3.4 -> 3.5)]({{< relref "/maas/upgrade/platform-upgrade" >}}). This page covers troubleshooting for issues that occur during or after the migration.
 
 ## What Changes in the 3.4 -> 3.5 Upgrade {#what-changes-in-the-3-4-3-5-upgrade}
 
@@ -340,7 +340,7 @@ oc get "${GATEWAY_DEPLOY}" -n openshift-ingress \
 ### Workaround
 
 > [!NOTE]
-> Downgrading RHCL is probably not the way out of this. 1.3.x does not appear in the configurations matrix for Red Hat OpenShift AI 3.4 and 3.5 (see [Version Notes]({{< relref "/guide/installation-guide/prerequisites#version-notes" >}})), so the workarounds below are the better starting point.
+> Downgrading RHCL is probably not the way out of this. 1.3.x does not appear in the configurations matrix for Red Hat OpenShift AI 3.4 and 3.5 (see [Version Notes]({{< relref "/maas/installation-guide/prerequisites#version-notes" >}})), so the workarounds below are the better starting point.
 
 If you are on RHCL 1.4.x, apply both workarounds from the [release notes](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/release_notes/known-issues_relnotes#RHOAIENG-76586_relnotes):
 
@@ -779,7 +779,7 @@ oc wait datasciencecluster default-dsc --for=condition=Ready --timeout=180s
 Once `Ready=True`, the `aigateway`, `mlflowoperator`, and MaaS CRDs install automatically and `maas-api`/`maas-controller` deploy without any further action. Re-run the phase that timed out (for example `./scripts/setup-maas.sh --from-phase 4`) to finish deploying models and governance resources.
 
 > [!IMPORTANT]
-> `manifests/04-rhoai-config/datasciencecluster.yaml` in this guide now sets `llamastackoperator: Removed` explicitly alongside `ogx: Managed`, so fresh installs following [Phase 4]({{< relref "/guide/installation-guide/rhoai-config" >}}) as written should not hit this. This issue is most likely to surface on clusters where the DSC already existed (e.g. a prior 3.4 install, or a partially-completed 3.5 attempt) before `setup-maas.sh` ran - the script detects `modelsAsAService: Managed` and skips re-applying the DSC, so a pre-existing `llamastackoperator: Managed` value is never corrected. See [Step 3]({{< relref "/guide/upgrade/platform-upgrade#step-3-add-ogx-component-ai-playground" >}}) for the equivalent guidance during a 3.4 -> 3.5 upgrade.
+> `manifests/04-rhoai-config/datasciencecluster.yaml` in this guide now sets `llamastackoperator: Removed` explicitly alongside `ogx: Managed`, so fresh installs following [Phase 4]({{< relref "/maas/installation-guide/rhoai-config" >}}) as written should not hit this. This issue is most likely to surface on clusters where the DSC already existed (e.g. a prior 3.4 install, or a partially-completed 3.5 attempt) before `setup-maas.sh` ran - the script detects `modelsAsAService: Managed` and skips re-applying the DSC, so a pre-existing `llamastackoperator: Managed` value is never corrected. See [Step 3]({{< relref "/maas/upgrade/platform-upgrade#step-3-add-ogx-component-ai-playground" >}}) for the equivalent guidance during a 3.4 -> 3.5 upgrade.
 
 ## Quick Reference: Triage Order
 

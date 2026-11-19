@@ -159,4 +159,4 @@ The cleanup script does not remove:
 
 ## Next step
 
-To reinstall, run `./scripts/setup-maas.sh` - see [Automated Setup]({{< relref "guide/quick-start" >}}).
+To reinstall, run `./scripts/setup-maas.sh` - see [Automated Setup]({{< relref "maas/quick-start" >}}).

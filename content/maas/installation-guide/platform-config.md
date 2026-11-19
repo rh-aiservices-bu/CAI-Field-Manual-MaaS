@@ -9,7 +9,7 @@ This phase configures the platform prerequisites for MaaS: Kuadrant/Authorino (a
 Apply each step in order and wait for the status gates before proceeding to the next step. The ordering matters because later resources depend on earlier ones (e.g. the Authorino CR references the TLS cert created by the Service annotation, and the Gateway requires the GatewayClass to exist).
 
 > [!TIP]
-> All file paths and `oc apply` commands in this guide are relative to the [CAI-Field-Manual-MaaS](https://github.com/rh-aiservices-bu/CAI-Field-Manual-MaaS) repository root. Make sure you have cloned it and are working from its root directory (see [Getting Started]({{< relref "/guide#getting-started" >}})).
+> All file paths and `oc apply` commands in this guide are relative to the [CAI-Field-Manual-MaaS](https://github.com/rh-aiservices-bu/CAI-Field-Manual-MaaS) repository root. Make sure you have cloned it and are working from its root directory (see [Getting Started]({{< relref "/maas#getting-started" >}})).
 
 > [!IMPORTANT]
 > This guide is not a replacement for the official Red Hat OpenShift AI Models as a Service documentation ([3.5](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/govern_llm_access_with_models-as-a-service/index) | [3.4](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.4/html/govern_llm_access_with_models-as-a-service/index)). It is a companion resource with opinionated Kustomize manifests and automation scripts to accelerate deployment.
@@ -18,7 +18,7 @@ Apply each step in order and wait for the status gates before proceeding to the 
 
 * OpenShift 4.19+ cluster with `oc` CLI authenticated as cluster-admin
 * Red Hat Connectivity Link (RHCL) operator already installed (see [RHCL docs](https://docs.redhat.com/en/documentation/red_hat_connectivity_link))
-* [Phase 1]({{< relref "/guide/installation-guide/prerequisites" >}}) (operators) completed
+* [Phase 1]({{< relref "/maas/installation-guide/prerequisites" >}}) (operators) completed
 
 ## Step 1: Kuadrant and Authorino
 
@@ -193,7 +193,7 @@ If you see "NotFound" or "Error":
 > [!WARNING]
 > MetalLB is not installed. Without it, the Gateway will never reach `Programmed=True` because there is no cloud load balancer to assign an external IP.
 >
-> You must go back and complete: [Phase 1: MetalLB for Non-Cloud Clusters]({{< relref "/guide/installation-guide/prerequisites#optional-metallb-operator-non-cloud-clusters" >}})
+> You must go back and complete: [Phase 1: MetalLB for Non-Cloud Clusters]({{< relref "/maas/installation-guide/prerequisites#optional-metallb-operator-non-cloud-clusters" >}})
 >
 > After installing MetalLB and configuring an IPAddressPool, return to this step.
 
@@ -287,7 +287,7 @@ The Gateway restricts HTTPRoute attachment to namespaces explicitly labeled with
 Label the namespace where the MaaS API route is created:
 
 {{< variant version "3.5 3.6" >}}
-The `redhat-ai-gateway-infra` namespace does not exist yet - it is created by the RHOAI operator when MaaS is enabled in [Phase 4]({{< relref "/guide/installation-guide/rhoai-config" >}}). After completing Phase 4, come back and label it:
+The `redhat-ai-gateway-infra` namespace does not exist yet - it is created by the RHOAI operator when MaaS is enabled in [Phase 4]({{< relref "/maas/installation-guide/rhoai-config" >}}). After completing Phase 4, come back and label it:
 
 ```sh
 oc label namespace redhat-ai-gateway-infra \
@@ -529,4 +529,4 @@ manifests/02-platform-config/
 
 ## Next step
 
-Proceed to [Phase 3: MaaS Platform]({{< relref "/guide/installation-guide/maas-platform" >}}).
+Proceed to [Phase 3: MaaS Platform]({{< relref "/maas/installation-guide/maas-platform" >}}).

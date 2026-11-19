@@ -36,7 +36,7 @@ Both work on the same cluster, sharing one RHCL and one `Kuadrant` instance:
 - An `AuthPolicy` on the MCP gateway was enforced by the shared Authorino in `kuadrant-system` (403 without credentials, 200 with).
 - No EnvoyFilter or Wasm reconcile loop. With both gateways idle the Kuadrant operator logged 0 Wasm config builds and 0 EnvoyFilter events in 4 minutes.
 
-It needed two fixes on the MaaS side and one on the MCP side, all described below. [Multi-Tenancy]({{< relref "guide/reference/multi-tenancy" >}}), [Observability]({{< relref "guide/observability" >}}), [External Models]({{< relref "guide/external-models" >}}) and [External OIDC]({{< relref "guide/external-oidc" >}}) were **not** exercised on 1.5.
+It needed two fixes on the MaaS side and one on the MCP side, all described below. [Multi-Tenancy]({{< relref "maas/reference/multi-tenancy" >}}), [Observability]({{< relref "maas/observability" >}}), [External Models]({{< relref "maas/external-models" >}}) and [External OIDC]({{< relref "maas/external-oidc" >}}) were **not** exercised on 1.5.
 
 ## What Changes in RHCL 1.5
 
@@ -119,7 +119,7 @@ listener secret name authorino-server-cert not found, err: Secret "authorino-ser
 
 ### Diagnosis
 
-[Phase 2]({{< relref "guide/installation-guide/platform-config" >}}) (and the Red Hat OpenShift AI docs) create the `authorino-authorino-authorization` Service with the `service.beta.openshift.io/serving-cert-secret-name` annotation **before** the `Kuadrant` CR, so service-ca issues the certificate. With RHCL 1.5 the Authorino operator takes that Service over when it reconciles the new `Authorino` CR and rewrites it without the annotation. Since authorino-operator 0.27.0 that Service is headless ([CONNLINK-1913](https://redhat.atlassian.net/browse/CONNLINK-1913)), and `clusterIP` cannot change in place, so the operator replaces the `ClusterIP` Service the manifest created. RHCL 1.4.4 ships the same operator change, so it is likely affected too (not tested). No annotation means no Secret, and Authorino's TLS listener never starts:
+[Phase 2]({{< relref "maas/installation-guide/platform-config" >}}) (and the Red Hat OpenShift AI docs) create the `authorino-authorino-authorization` Service with the `service.beta.openshift.io/serving-cert-secret-name` annotation **before** the `Kuadrant` CR, so service-ca issues the certificate. With RHCL 1.5 the Authorino operator takes that Service over when it reconciles the new `Authorino` CR and rewrites it without the annotation. Since authorino-operator 0.27.0 that Service is headless ([CONNLINK-1913](https://redhat.atlassian.net/browse/CONNLINK-1913)), and `clusterIP` cannot change in place, so the operator replaces the `ClusterIP` Service the manifest created. RHCL 1.4.4 ships the same operator change, so it is likely affected too (not tested). No annotation means no Secret, and Authorino's TLS listener never starts:
 
 ```bash
 oc get svc authorino-authorino-authorization -n kuadrant-system \
@@ -195,7 +195,7 @@ Tracked as [CONNLINK-1713](https://redhat.atlassian.net/browse/CONNLINK-1713) (r
 RHCL 1.5 treats `Kuadrant` as a singleton. A second CR in another namespace gets no status, no event and no Authorino or Limitador. It is ignored without any message. The MCP Gateway guide creates its own `Kuadrant` in `mcp-gateway` for authentication, so:
 
 - If MaaS is installed first, skip that step. The MaaS instance in `kuadrant-system` enforces `AuthPolicy` on the MCP gateway too.
-- If the MCP Gateway guide ran first, delete its `Kuadrant` CR before [Phase 2]({{< relref "guide/installation-guide/platform-config" >}}). Otherwise the MaaS one is the instance that gets ignored, and MaaS never gets its Authorino in `kuadrant-system`.
+- If the MCP Gateway guide ran first, delete its `Kuadrant` CR before [Phase 2]({{< relref "maas/installation-guide/platform-config" >}}). Otherwise the MaaS one is the instance that gets ignored, and MaaS never gets its Authorino in `kuadrant-system`.
 
 ```bash
 oc get kuadrant -A
@@ -253,6 +253,6 @@ Do this on a test cluster first.
 ## Related
 
 - Field reports that triggered this validation: RHCL 1.5 with Red Hat OpenShift AI 3.5.2 MaaS for the GA MCP Gateway, with operator memory pressure and an EnvoyFilter/Wasm reconcile loop when using the MCP Gateway. The memory issue reproduced (Issue 2). The loop did not reproduce on this setup with one `Kuadrant` instance, nor after adding a second one.
-- [Running MaaS on OpenShift 5, Issue 2]({{< relref "guide/openshift5#issue-2" >}}): on OpenShift 5 only `stable-1.5` is published.
+- [Running MaaS on OpenShift 5, Issue 2]({{< relref "maas/openshift5#issue-2" >}}): on OpenShift 5 only `stable-1.5` is published.
 - [RHOAIENG-103137](https://redhat.atlassian.net/browse/RHOAIENG-103137): docs request for an RHCL 1.5 support statement with Red Hat OpenShift AI 3.5.x and for MaaS and the MCP Gateway on one cluster.
 - [RHOAIENG-98735](https://redhat.atlassian.net/browse/RHOAIENG-98735): MCP Gateway GA documentation, targeted at Red Hat OpenShift AI 3.6.

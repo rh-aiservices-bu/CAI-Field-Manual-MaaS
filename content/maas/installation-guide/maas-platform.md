@@ -7,14 +7,14 @@ weight: 30
 Deploy the PostgreSQL database required by the MaaS API for key lifecycle management.
 
 > [!TIP]
-> All file paths and `oc apply` commands in this guide are relative to the [CAI-Field-Manual-MaaS](https://github.com/rh-aiservices-bu/CAI-Field-Manual-MaaS) repository root. Make sure you have cloned it and are working from its root directory (see [Getting Started]({{< relref "/guide#getting-started" >}})).
+> All file paths and `oc apply` commands in this guide are relative to the [CAI-Field-Manual-MaaS](https://github.com/rh-aiservices-bu/CAI-Field-Manual-MaaS) repository root. Make sure you have cloned it and are working from its root directory (see [Getting Started]({{< relref "/maas#getting-started" >}})).
 
 > [!IMPORTANT]
 > This guide is not a replacement for the official Red Hat OpenShift AI Models as a Service documentation ([3.5](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/govern_llm_access_with_models-as-a-service/index) | [3.4](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.4/html/govern_llm_access_with_models-as-a-service/index)). It is a companion resource with opinionated Kustomize manifests and automation scripts to accelerate deployment.
 
 ## Prerequisites
 
-* [Phase 2]({{< relref "/guide/installation-guide/platform-config" >}}) (platform configuration) is completed
+* [Phase 2]({{< relref "/maas/installation-guide/platform-config" >}}) (platform configuration) is completed
 * Kuadrant, User Workload Monitoring, GatewayClass, and Gateway are configured
 * `redhat-ods-applications` namespace exists (created by the RHOAI operator in Phase 1)
 
@@ -26,7 +26,7 @@ The MaaS platform requires a PostgreSQL database before the RHOAI operator can f
 2. **PostgreSQL secrets** - `postgres-creds` (DB credentials) and `maas-db-config` (connection URL consumed by maas-api).
 
 > [!TIP]
-> If you prefer the fully automated path, see [Automated Setup]({{< relref "/guide/quick-start" >}}). To run only this phase automatically: `./scripts/setup-maas.sh --from-phase 3`
+> If you prefer the fully automated path, see [Automated Setup]({{< relref "/maas/quick-start" >}}). To run only this phase automatically: `./scripts/setup-maas.sh --from-phase 3`
 
 ## Manual setup
 
@@ -165,4 +165,4 @@ manifests/03-maas-platform/
 
 ## Next step
 
-Proceed to [Phase 4: RHOAI Configuration]({{< relref "/guide/installation-guide/rhoai-config" >}}).
+Proceed to [Phase 4: RHOAI Configuration]({{< relref "/maas/installation-guide/rhoai-config" >}}).

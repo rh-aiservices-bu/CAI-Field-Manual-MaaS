@@ -7,7 +7,7 @@ weight: 10
 This page explains how Red Hat OpenShift AI Models as a Service works under the hood — what each component does and how a request travels from a user's laptop to a model and back.
 
 > [!TIP]
-> All file paths and `oc apply` commands in this guide are relative to the [CAI-Field-Manual-MaaS](https://github.com/rh-aiservices-bu/CAI-Field-Manual-MaaS) repository root. Make sure you have cloned it and are working from its root directory (see [Getting Started]({{< relref "/guide#getting-started" >}})).
+> All file paths and `oc apply` commands in this guide are relative to the [CAI-Field-Manual-MaaS](https://github.com/rh-aiservices-bu/CAI-Field-Manual-MaaS) repository root. Make sure you have cloned it and are working from its root directory (see [Getting Started]({{< relref "/maas#getting-started" >}})).
 
 > [!IMPORTANT]
 > This guide is not a replacement for the official Red Hat OpenShift AI Models as a Service documentation ([3.5](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/govern_llm_access_with_models-as-a-service/index) | [3.4](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.4/html/govern_llm_access_with_models-as-a-service/index)). It is a companion resource with opinionated Kustomize manifests and automation scripts to accelerate deployment.
@@ -167,7 +167,7 @@ sequenceDiagram
 
 To see all of the above in action, explore the interactive animated visualizer — it walks through 5 complete flows (including auth failures and rate limiting) step by step with clickable components and a request/response inspector.
 
-For pod-by-pod debugging with `oc` commands, see [Request Deep Dive]({{< relref "/guide/reference/request-deepdive" >}}).
+For pod-by-pod debugging with `oc` commands, see [Request Deep Dive]({{< relref "/maas/reference/request-deepdive" >}}).
 
 > [!NOTE]
 > {{< visualizer file="visualizers/flow.html" label="RHOAI 3.5 Flow Visualizer" embed="true" >}}

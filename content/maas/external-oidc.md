@@ -5,12 +5,12 @@ weight: 80
 ---
 
 > [!NOTE]
-> This phase requires a completed MaaS installation (through [Phase 4]({{< relref "guide/installation-guide/rhoai-config" >}})) and at least one model deployed ([Phase 5]({{< relref "guide/model-deployment/maas-models" >}})) to verify the OIDC flow end-to-end.
+> This phase requires a completed MaaS installation (through [Phase 4]({{< relref "maas/installation-guide/rhoai-config" >}})) and at least one model deployed ([Phase 5]({{< relref "maas/model-deployment/maas-models" >}})) to verify the OIDC flow end-to-end.
 
 By default, MaaS authenticates users via OpenShift tokens (TokenReview). External OIDC lets you integrate with identity providers like Keycloak, Okta, or Azure AD so users can access MaaS with their corporate credentials - no OpenShift accounts needed.
 
 > [!TIP]
-> All file paths and `oc apply` commands in this guide are relative to the [CAI-Field-Manual-MaaS](https://github.com/rh-aiservices-bu/CAI-Field-Manual-MaaS) repository root. Make sure you have cloned it and are working from its root directory (see [Getting Started]({{< relref "guide#getting-started" >}})).
+> All file paths and `oc apply` commands in this guide are relative to the [CAI-Field-Manual-MaaS](https://github.com/rh-aiservices-bu/CAI-Field-Manual-MaaS) repository root. Make sure you have cloned it and are working from its root directory (see [Getting Started]({{< relref "maas#getting-started" >}})).
 
 > [!IMPORTANT]
 > This guide is not a replacement for the official Red Hat OpenShift AI Models as a Service documentation ([3.5](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/govern_llm_access_with_models-as-a-service/deploy-and-manage-models-as-a-service#configuring-maas-external-oidc_maas-deploy) | [3.4](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.4/html/govern_llm_access_with_models-as-a-service/index)). It is a companion resource with opinionated Kustomize manifests and automation scripts to accelerate deployment.
@@ -338,7 +338,7 @@ curl -sSk -X POST \
 ```
 
 > [!TIP]
-> See the [OIDC Authentication demo](https://github.com/rh-aiservices-bu/CAI-Field-Manual-MaaS/tree/main/demo/oidc-authentication) for a presenter-ready walkthrough with a click-through UI and CLI client. The [JWKS Cache demo](https://github.com/rh-aiservices-bu/CAI-Field-Manual-MaaS/tree/main/demo/jwks-cache) proves that JWT signatures are verified locally from cached keys. All demos are listed on the [Demos]({{< relref "guide/demos/demos" >}}) page.
+> See the [OIDC Authentication demo](https://github.com/rh-aiservices-bu/CAI-Field-Manual-MaaS/tree/main/demo/oidc-authentication) for a presenter-ready walkthrough with a click-through UI and CLI client. The [JWKS Cache demo](https://github.com/rh-aiservices-bu/CAI-Field-Manual-MaaS/tree/main/demo/jwks-cache) proves that JWT signatures are verified locally from cached keys. All demos are listed on the [Demos]({{< relref "maas/demos/demos" >}}) page.
 
 ## Cleanup
 

@@ -7,14 +7,14 @@ weight: 10
 This phase deploys LLM models and registers them with the MaaS platform. Each model includes the inference workload (LLMInferenceService) and the MaaS control plane resources (MaaSModelRef, MaaSAuthPolicy, MaaSSubscription) that enable API key management, access control, and rate limiting.
 
 > [!TIP]
-> All file paths and `oc apply` commands in this guide are relative to the [CAI-Field-Manual-MaaS](https://github.com/rh-aiservices-bu/CAI-Field-Manual-MaaS) repository root. Make sure you have cloned it and are working from its root directory (see [Getting Started]({{< relref "/guide#getting-started" >}})).
+> All file paths and `oc apply` commands in this guide are relative to the [CAI-Field-Manual-MaaS](https://github.com/rh-aiservices-bu/CAI-Field-Manual-MaaS) repository root. Make sure you have cloned it and are working from its root directory (see [Getting Started]({{< relref "/maas#getting-started" >}})).
 
 > [!IMPORTANT]
 > This guide is not a replacement for the official Red Hat OpenShift AI Models as a Service documentation ([3.5](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/govern_llm_access_with_models-as-a-service/index) | [3.4](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.4/html/govern_llm_access_with_models-as-a-service/index)). It is a companion resource with opinionated Kustomize manifests and automation scripts to accelerate deployment.
 
 ## Prerequisites
 
-- [Phases 1]({{< relref "/guide/installation-guide/prerequisites" >}})-[4]({{< relref "/guide/installation-guide/rhoai-config" >}}) completed (RHOAI installed, MaaS platform running)
+- [Phases 1]({{< relref "/maas/installation-guide/prerequisites" >}})-[4]({{< relref "/maas/installation-guide/rhoai-config" >}}) completed (RHOAI installed, MaaS platform running)
 - MaaS Gateway available in `openshift-ingress` namespace
 - `maas-api` and `maas-controller` pods running (in `redhat-ai-gateway-infra` on RHOAI 3.5+, or `redhat-ods-applications` on 3.4)
 
@@ -115,7 +115,7 @@ Defines rate-limiting tiers for model access. Each model ships with two tiers:
 Higher-priority subscriptions take precedence. You can adjust limits, windows, and subject groups to match your usage policies.
 
 > [!TIP]
-> See the [User-Level Rate Limiting demo](https://github.com/rh-aiservices-bu/CAI-Field-Manual-MaaS/tree/main/demo/user-level-rate-limiting) and [Subscription Priority demo](https://github.com/rh-aiservices-bu/CAI-Field-Manual-MaaS/tree/main/demo/subscription-priority) for hands-on walkthroughs of tiering and priority resolution. All demos are listed on the [Demos]({{< relref "/guide/demos/demos" >}}) page.
+> See the [User-Level Rate Limiting demo](https://github.com/rh-aiservices-bu/CAI-Field-Manual-MaaS/tree/main/demo/user-level-rate-limiting) and [Subscription Priority demo](https://github.com/rh-aiservices-bu/CAI-Field-Manual-MaaS/tree/main/demo/subscription-priority) for hands-on walkthroughs of tiering and priority resolution. All demos are listed on the [Demos]({{< relref "/maas/demos/demos" >}}) page.
 
 ### Governance Pairing: Why Both Are Required {#governance-pairing}
 
@@ -134,9 +134,9 @@ Higher-priority subscriptions take precedence. You can adjust limits, windows, a
 > [!NOTE]
 > **Gateway Pod OOMKill**
 >
-> Deploying a model triggers the Istio gateway to load Kuadrant Wasm extensions, which can push the pod past the default `1Gi` memory limit. If you applied the `gateway-resources.yaml` ConfigMap in [Phase 2 Step 5b]({{< relref "/guide/installation-guide/platform-config#gateway-pod-oomkill-prevention" >}}), this is already handled (the limit is set to `2Gi` via `parametersRef`).
+> Deploying a model triggers the Istio gateway to load Kuadrant Wasm extensions, which can push the pod past the default `1Gi` memory limit. If you applied the `gateway-resources.yaml` ConfigMap in [Phase 2 Step 5b]({{< relref "/maas/installation-guide/platform-config#gateway-pod-oomkill-prevention" >}}), this is already handled (the limit is set to `2Gi` via `parametersRef`).
 >
-> If the gateway pod starts OOMKilling after deploying a model, see [Phase 2: Gateway OOMKill Prevention]({{< relref "/guide/installation-guide/platform-config#gateway-pod-oomkill-prevention" >}}) for the fix.
+> If the gateway pod starts OOMKilling after deploying a model, see [Phase 2: Gateway OOMKill Prevention]({{< relref "/maas/installation-guide/platform-config#gateway-pod-oomkill-prevention" >}}) for the fix.
 
 Create the `llm` namespace if it doesn't exist and label it for RHOAI:
 
@@ -383,7 +383,7 @@ curl -sk "https://${MAAS_URL}/v1/chat/completions" \
 A regular user trying to create an API key with `"subscription": "simulator-pipeline"` gets `invalid_subscription` - the maas-api checks the caller's identity against `spec.owner.users` and rejects anyone not listed.
 
 > [!TIP]
-> See the [Service Account Access demo](https://github.com/rh-aiservices-bu/CAI-Field-Manual-MaaS/tree/main/demo/service-account-access) for a full walkthrough deploying an in-cluster app that calls a model with its SA token. Listed on the [Demos]({{< relref "/guide/demos/demos" >}}) page.
+> See the [Service Account Access demo](https://github.com/rh-aiservices-bu/CAI-Field-Manual-MaaS/tree/main/demo/service-account-access) for a full walkthrough deploying an in-cluster app that calls a model with its SA token. Listed on the [Demos]({{< relref "/maas/demos/demos" >}}) page.
 
 ## Appendix
 
@@ -412,4 +412,4 @@ Each model follows the same Kustomize layout:
 
 ## Next step
 
-Proceed to [Phase 6: Verification]({{< relref "/guide/model-deployment/verification" >}}).
+Proceed to [Phase 6: Verification]({{< relref "/maas/model-deployment/verification" >}}).

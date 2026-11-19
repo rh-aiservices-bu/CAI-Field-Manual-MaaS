@@ -10,7 +10,7 @@ What happens when you install Red Hat OpenShift AI MaaS on OpenShift 5, which bl
 > This guide is not a replacement for the official Red Hat OpenShift AI MaaS documentation ([3.5](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.5/html/govern_llm_access_with_models-as-a-service/index) | [3.4](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.4/html/govern_llm_access_with_models-as-a-service/index)). OpenShift 5.0 does not appear in the [RHOAI 3.x supported configurations matrix](https://access.redhat.com/articles/rhoai-supported-configs-3.x) at the time of writing, so treat everything here as field notes, not a support statement.
 
 > [!TIP]
-> All file paths and `oc apply` commands in this guide are relative to the [CAI-Field-Manual-MaaS](https://github.com/rh-aiservices-bu/CAI-Field-Manual-MaaS) repository root. Make sure you have cloned it and are working from its root directory (see [Getting Started]({{< relref "guide#getting-started" >}})).
+> All file paths and `oc apply` commands in this guide are relative to the [CAI-Field-Manual-MaaS](https://github.com/rh-aiservices-bu/CAI-Field-Manual-MaaS) repository root. Make sure you have cloned it and are working from its root directory (see [Getting Started]({{< relref "maas#getting-started" >}})).
 
 ## Test Cluster
 
@@ -138,12 +138,12 @@ oc patch subscription rhcl-operator -n openshift-operators --type=merge \
   -p '{"spec":{"channel":"stable-1.5"}}'
 ```
 
-That installs RHCL 1.5.0. The manifests in this repo are written against 1.4.2, which is what [Multi-Tenancy]({{< relref "guide/reference/multi-tenancy" >}}) needs for the gateway-scoped AuthPolicy, and 1.5.0 is covered separately in [Running MaaS with RHCL 1.5]({{< relref "guide/rhcl-15" >}}).
+That installs RHCL 1.5.0. The manifests in this repo are written against 1.4.2, which is what [Multi-Tenancy]({{< relref "maas/reference/multi-tenancy" >}}) needs for the gateway-scoped AuthPolicy, and 1.5.0 is covered separately in [Running MaaS with RHCL 1.5]({{< relref "maas/rhcl-15" >}}).
 
 `scripts/setup-maas.sh` therefore looks for a catalog that publishes the channel the manifest asks for **before** falling back to any catalog's default channel. On a cluster that also carries the 4.22 snapshot, RHCL resolves to `redhat-operators-v422` / `stable` and stays on 1.4.2. `redhat-operators` wins ties, so a snapshot catalog never shadows the official index for an operator both of them publish. Only when no catalog offers the requested channel does the installer fall back to a default, and it warns when it does.
 
 > [!NOTE]
-> On a cluster carrying only the 5.0 index, `stable-1.5` is the single option and you get RHCL 1.5.0. That was validated on OpenShift 4.21 with RHOAI 3.5.2, not on OpenShift 5, see [Running MaaS with RHCL 1.5]({{< relref "guide/rhcl-15" >}}).
+> On a cluster carrying only the 5.0 index, `stable-1.5` is the single option and you get RHCL 1.5.0. That was validated on OpenShift 4.21 with RHOAI 3.5.2, not on OpenShift 5, see [Running MaaS with RHCL 1.5]({{< relref "maas/rhcl-15" >}}).
 
 ## Issue 3: The Installer Assumes 3.5 While the Catalog Gives 3.4 {#issue-3}
 
