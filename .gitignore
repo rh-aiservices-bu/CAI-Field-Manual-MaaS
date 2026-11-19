@@ -3,3 +3,7 @@
 /.hugo_cache/
 /.hugo_build.lock
 .DS_Store
+/hugo.direct.sum
+/_archive/
+/hugo.work
+/hugo.work.sum

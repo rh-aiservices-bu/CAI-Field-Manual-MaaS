@@ -1,3 +1,4 @@
+{{- /* Local copy of Shell's layouts/_partials/td-variant-selector.html (Shell 1f1471c74947): kept because this site has no params.customize and Shell's renderStatus() unconditionally appends " — reading as <user> on api<cluster>", which renders as an empty dangling tail here. TODO(Shell): add a customize-tail guard — if (!('user' in fields) || !('cluster' in fields)) return; immediately before el.appendChild(' — reading as ') in renderStatus() (~line 100); delete this override on the first Shell bump that carries it. */ -}}
 {{- /* Display-option selector: a control per axis (params.variants, an
      ordered slice), rendered at the top of every docs page — the project
      override of layouts/docs/baseof.html calls this partial right after the

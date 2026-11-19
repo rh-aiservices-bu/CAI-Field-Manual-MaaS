@@ -10,8 +10,13 @@ output, and known issues are documented where the reader hits them. Version
 tabs at the top of every page (RHAIE version selector) filter version-specific
 steps.
 
+This repo is the **rendered site + all content**. Look-and-feel, layout
+overrides, and build rules come from the
+[`CAI-Field-Manual-Shell`](https://github.com/rh-aiservices-bu/CAI-Field-Manual-Shell)
+Hugo module (imported via `hugo.yaml` → `module.imports`).
+
 Built with [Hugo](https://gohugo.io/) and the [OINK](https://oink.pgsty.com/)
-theme (`github.com/pgsty/oink`).
+theme (`github.com/pgsty/oink`, transitively via the Shell module).
 
 ## How to consume it
 
@@ -27,11 +32,15 @@ the Overview page maps the phases and links every section.
   pages, visits, and tabs.
 - Search with `/` or the navbar search box (`offline_search`).
 - Each section also renders a print bundle for offline/print reading.
+- **Command palette** (the navbar search box or `/`): type `agent` and
+  choose **"Feed it to my AI Agent"** — it opens a copy-ready prompt for
+  Claude Code or Codex: the agent clones the repo, reads the README and
+  the code, reports what the manual can do, and asks what to do next.
 
 **AI agents** — consume the markdown:
 
 - Per-page markdown via the page action menu: *Copy markdown*, *View
-  markdown*, *Open in Claude / ChatGPT*.
+  markdown*, *Open in Claude / ChatGPT*, *Open Gemini*.
 - Whole site as [`llms.txt`](https://rh-aiservices-bu.github.io/CAI-Field-Manual-MaaS/llms.txt).
 - The markdown, `llms.txt`, and print outputs carry every display option
   labeled (`Axis: Option`) — only the interactive HTML filters content,
@@ -50,37 +59,12 @@ the Overview page maps the phases and links every section.
 
 Where things live:
 
-- `hugo.yaml` — site config: display-option (variant) axis (RHAIE version
-  3.4/3.5/3.6, default 3.6), `docs_section: guide` (drives the llms.txt
-  Documentation index and the docs-sidebar fallback),
-  `github_repo: https://github.com/rh-aiservices-bu/CAI-Field-Manual-MaaS`,
-  GA4 placeholder
+- `hugo.yaml` — site config: title, baseURL, languages, markup, outputs, module imports, `ui.docs_section: guide` (drives the llms.txt Documentation index and the docs-sidebar fallback), the display-option (variant) axis (RHAIE version 3.4/3.5/3.6, default 3.6), `github_repo`/`github_branch`, GA4 placeholder. Chrome defaults (`logo`, `offline_search`, `copyright`, `footer_center_info`, `ui` incl. presets, sidebar/nav chrome) live in the Shell module's `hugo.yaml` and are deep-merged; site values win on conflict.
+- `content/guide/` — the manual: Overview `_index.md`, five sub-sections, and the phase/reference pages
 - `data/home.yaml` — landing page sections (hero, cards, cta)
 - `content/_index.md` — home page front matter
-- `content/guide/` — the guide (Overview `_index.md`, five sub-sections, and
-  the phase/reference pages)
-- `layouts/_partials/google_analytics.html` — GA4 partial (the theme's
-  head.html calls it in production)
-- `layouts/docs/baseof.html`, `layouts/_partials/shell/sidebar-tree.html`,
-  `layouts/_partials/pager-state.html` — pinned copies of the oink v1.4.0
-  files, each headed by a provenance comment naming its one deliberate change
-  (page-top selector call; Home promoted to the tree's top level with a
-  small-screen Home row; pager rooted at the page's own section instead of
-  the site root). Re-diff all three against
-  `~/go/pkg/mod/github.com/pgsty/oink@v<ver>/` on a theme bump.
-- `layouts/_partials/td-variant-selector.html` +
-  `layouts/_partials/hooks/head-end.html` — the page-top selector and the
-  pre-paint persistence runtime (config blob, filter CSS). The theme ships
-  both hooks empty, so these are sanctioned extension points, not copies.
-- `layouts/_shortcodes/variant.html` — the variant shortcode used by the
-  converted version tabs
-- `layouts/_shortcodes/visualizer.html` — links the flowstory attachments
-  under static/visualizers/ with the baseURL subpath applied; `embed="true"`
-  renders an in-page iframe with an expand toggle (fixed-inset lightbox --
-  the FlowStory engine's `(iframeW - 380px)` working width needs the full
-  shell for legible labels). Styled by `.td-viz-embed` in
-  assets/scss/_styles_project.scss, hidden in print output
-- `.github/workflows/github-pages.yaml` — deploy workflow
+- `Docs/` — backlog, content-review notes, upstream-sync questions
+- Layouts, assets, and static (chrome): live in the Shell module (`CAI-Field-Manual-Shell`). See that repo's README for what it exports. This repo's only local chrome is `layouts/_partials/td-variant-selector.html` (single override — no `params.customize`; Shell's tail would dangle) and `layouts/_shortcodes/visualizer.html` (inline styles for the flow embed so the site does not shadow Shell's SCSS). Content-owned assets stay local: `assets/images/` and `static/visualizers/`. To pick up shell updates: edit the Shell import's `version:` hash in `hugo.yaml` to the new commit (e.g. `git ls-remote https://github.com/rh-aiservices-bu/CAI-Field-Manual-Shell main | cut -c1-12`), then re-run the publication gate — Hugo resolves the pinned commit directly, so the build passes even if `go.mod`/`go.sum` are stale. `version:` accepts semver, branch names, or commit hashes (Hugo ≥ 0.150); a commit hash is deliberate — commit-precise, no Shell tagging. To reconcile `go.mod`/`go.sum` after a bump, run `go get github.com/rh-aiservices-bu/CAI-Field-Manual-Shell@<hash>` (don't use `hugo mod get` — it rewrites to Shell main, dirtying the lockfiles).
 
 Automation and manifests that the guide references, copied so clone commands
 in the guide retarget to this repo:
@@ -94,9 +78,9 @@ in the guide retarget to this repo:
 - `.claude/skills/` — `install-maas` and `verify-guide` AI coding skills
 - `LICENSE` — Apache-2.0
 
-The project root stays minimal: the theme module supplies the navbar logo and
-favicon, and build outputs (`public/`, `resources/`) are gitignored and
-regenerate.
+The project root stays minimal: the Shell module supplies the layouts and
+chrome, the theme module (oink) supplies the navbar chrome, and build outputs
+(`public/`, `resources/`) are gitignored and regenerate.
 
 ## Disclaimers
 
@@ -114,6 +98,7 @@ Prerequisites:
 
 - Hugo Extended ≥ 0.168 (`hugo version`)
 - Go ≥ 1.27 — no Node.js needed (Hugo modules fetch the theme)
+- Dart Sass on PATH (`sass --version` → Dart Sass 1.108.2+; `npm install -g sass-embedded` if missing — needed for the SCSS pipeline)
 
 ```sh
 git clone https://github.com/rh-aiservices-bu/CAI-Field-Manual-MaaS.git
@@ -124,24 +109,74 @@ hugo server
 With a path in `baseURL`
 (`https://rh-aiservices-bu.github.io/CAI-Field-Manual-MaaS/`), the dev
 server serves at `http://localhost:1313/CAI-Field-Manual-MaaS/` — a 404
-at the root is expected, not a broken build.
+at the root is expected, not a broken build. Builds use the Shell commit pinned in
+`hugo.yaml` `module.imports[].version`, not Shell `main` — deliberate, commit-precise;
+the `hugo.work` workspace replacement below overrides it only for testing unpushed Shell work.
+
+To verify a Shell working-tree change locally (before it is pushed), add a
+workspace replacement — create `hugo.work` in this repo root containing:
+
+```
+go 1.27.3
+
+use .
+
+replace github.com/rh-aiservices-bu/CAI-Field-Manual-Shell => ../CAI-Field-Manual-Shell
+```
+
+Then run with the workspace:
+
+```sh
+HUGO_MODULE_WORKSPACE=hugo.work hugo server
+```
+
+Verify with `hugo config` / `hugo mod graph` that the replacement is active.
+`hugo.work` is gitignored — never commit it.
 
 ### Publication gate
 
-```sh
-hugo --cleanDestinationDir --gc --minify --environment production \
-  --printPathWarnings
-```
-
-Note: `--panicOnWarning` is intentionally omitted — the pinned theme version
-(v1.4.0) still transpiles SCSS with Hugo's deprecated LibSass, which emits a
-WARNING on Hugo ≥ 0.153 and would abort the build. Gate on the remaining
-warning surface instead: assert the build emits no WARN lines other than the
-known libsass one.
+One implementation, used locally and by CI (both the deploy build and PR
+checks run it). Locally the raw build is enough:
 
 ```sh
 hugo --cleanDestinationDir --gc --minify --environment production \
   --printPathWarnings 2>&1 | grep -i warn | grep -v "css.Sass: libsass"
 ```
 
-No output = clean. Revisit when the theme moves to the Dart Sass transpiler.
+In CI the gate runs via the Shell checkout:
+
+```sh
+shell/scripts/publication-gate.sh --baseURL "https://example.invalid/docs/"
+```
+
+The build must succeed and the only WARN allowed is the known oink libsass
+deprecation; anything else fails with exit 1.
+
+Optional contract check (needs sibling Shell clone + `public/` from the
+production build):
+
+```sh
+sh ../CAI-Field-Manual-Shell/scripts/check-contracts.sh
+```
+
+Note: `--panicOnWarning` is intentionally not used. The pinned theme version
+(v1.4.0) still transpiles SCSS with Hugo's deprecated LibSass, which emits a
+WARNING on Hugo ≥ 0.153 and would abort the build. The gate asserts the build
+emits no WARN lines other than the known libsass one. Revisit when the theme
+moves to the Dart Sass transpiler.
+
+## Updating the shell
+
+Edit the Shell import's `version:` hash in `hugo.yaml` to the new commit
+(e.g. `git ls-remote https://github.com/rh-aiservices-bu/CAI-Field-Manual-Shell main | cut -c1-12`).
+`version:` accepts semver, branch names, or commit hashes (Hugo ≥ 0.150) — a commit hash is
+deliberate, commit-precise, no Shell tagging. Hugo resolves the pinned commit directly, so the
+build passes even with stale `go.mod`/`go.sum`; to keep them in sync after a bump run
+`go get github.com/rh-aiservices-bu/CAI-Field-Manual-Shell@<hash>` (don't use `hugo mod get` —
+it rewrites `go.mod`/`go.sum` to Shell `main`, dirtying the lockfiles; don't use `hugo mod tidy`
+either — it can prune the Shell entry). Verify `hugo mod graph` shows the pinned pseudo-version
+and still shows `github.com/pgsty/oink v1.4.0` (the pinned theme). Re-run the publication gate.
+
+## One-time admin
+
+- **GitHub Pages**: Settings → Pages → Source = **GitHub Actions**.
