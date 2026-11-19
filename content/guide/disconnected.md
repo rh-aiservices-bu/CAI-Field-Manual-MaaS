@@ -20,7 +20,7 @@ This guide assumes:
 - A mirror registry is running and the cluster trusts its CA
 - ImageDigestMirrorSet (IDMS) and CatalogSources from the RHOAI mirror are already applied
 
-The MaaS guide adds 9 operators and several container images that are NOT part of the base RHOAI mirror set. This phase mirrors those extra components.
+The MaaS guide adds 10 operators and several container images that are NOT part of the base RHOAI mirror set. This phase mirrors those extra components.
 
 > [!TIP]
 > Currently, `oc-mirror` mirrors all images referenced in the RHOAI operator bundle regardless of which DSC components you enable. There is an initiative ([RHOAIENG-75890](https://redhat.atlassian.net/browse/RHOAIENG-75890) / [OCPSTRAT-3350](https://redhat.atlassian.net/browse/OCPSTRAT-3350)) to support selective mirroring - so you can mirror only the images for the components you need (e.g. Dashboard + MaaS). Until that lands, this guide mirrors the full set.
@@ -38,6 +38,7 @@ The MaaS guide adds 9 operators and several container images that are NOT part o
 | Cluster Observability Operator | `cluster-observability-operator` | Monitoring stack |
 | OpenTelemetry | `opentelemetry-product` | Distributed tracing |
 | Tempo | `tempo-product` | Trace storage backend |
+| Loki Operator | `loki-operator` | Log storage for the Phase 7 usage dashboards |
 
 ## Additional images to mirror
 
@@ -52,6 +53,8 @@ Images not discoverable through operator bundles:
 | `registry.redhat.io/rhaii/vllm-cuda-rhel9@sha256:5800...` (pinned digest) | vLLM CUDA runtime for GPU models |
 | `registry.access.redhat.com/rhcl-1/wasm-shim-rhel9@sha256:...` (pinned digest) | Kuadrant WASM shim for gateway auth and rate limiting (see [wasm-shim](#wasm-shim)) |
 | `ghcr.io/llm-d/llm-d-inference-sim:v0.7.1` | Simulator runtime (CPU-only model) |
+| `quay.io/rh-aiservices-bu/minio:RELEASE.2025-09-07T16-13-09Z` | MinIO S3 backend for the LokiStack (usage dashboards) |
+| `quay.io/rh-aiservices-bu/mc:latest` | MinIO client, creates the `loki` bucket (floating tag, pin it for a reproducible mirror) |
 | `registry.redhat.io/rhai/modelcar-granite-4-0-h-tiny-fp8-dynamic:3.0` | Granite 4.0-h-tiny model weights |
 | `registry.redhat.io/rhelai1/modelcar-gpt-oss-20b:1.5` | GPT-oss-20b model weights |
 | `registry.redhat.io/rhelai1/modelcar-gemma-2-9b-it-fp8:1.5` | Gemma 2 9B IT FP8 model weights |
@@ -65,8 +68,7 @@ Images not discoverable through operator bundles:
 
 <a id="mirroring-step1"></a>
 ### Step 1: Mirror the MaaS content
-
-An `ImageSetConfiguration` is provided at `manifests/00-disconnected/imageset-config-maas.yaml`. It includes all 11 operators (Red Hat OpenShift AI base + MaaS) and the additional images listed above.
+An `ImageSetConfiguration` is provided at `manifests/00-disconnected/imageset-config-maas.yaml`. It includes all the operators (Red Hat OpenShift AI base + MaaS) and the additional images listed above.
 
 Before running oc-mirror, discover the WASM shim digest for your RHCL version and update the ImageSetConfiguration:
 
@@ -254,14 +256,14 @@ Confirm all MaaS operators are available:
 ```sh
 for pkg in rhcl-operator authorino-operator dns-operator limitador-operator \
            leader-worker-set metallb-operator \
-           cluster-observability-operator opentelemetry-product tempo-product; do
+           cluster-observability-operator opentelemetry-product tempo-product \
+           loki-operator; do
   echo -n "  $pkg: "
   oc get packagemanifest "$pkg" -n openshift-marketplace \
     -o jsonpath='{.status.catalogSource}' 2>/dev/null && echo || echo "NOT FOUND"
 done
 ```
-
-All 9 should resolve to a CatalogSource. If any show `NOT FOUND`, the mirror set is incomplete - check the oc-mirror output for errors.
+All 10 should resolve to a CatalogSource. If any show `NOT FOUND`, the mirror set is incomplete - check the oc-mirror output for errors.
 
 Verify the gateway pod has no WASM errors:
 
@@ -270,6 +272,31 @@ oc logs -n openshift-ingress -l istio.io/gateway-name=maas-default-gateway --tai
 ```
 
 If you see `cannot fetch Wasm module` or `applying deny RBAC filter`, the WASM shim patch from [wasm-shim](#wasm-shim) was not applied or the image is not in the mirror registry.
+
+## CPU MachineSet (optional)
+
+If the cluster has no dedicated CPU worker nodes and you plan to deploy the CPU-only models (`simulator`, `qwen3-06b`), create a CPU MachineSet.
+
+A template is provided at `manifests/00-disconnected/cpu-machineset.yaml`. It is the same shape as the GPU template but sets *no* taint - the GPU model manifests tolerate `nvidia.com/gpu`, while the CPU model manifests carry no tolerations, so a taint here would leave their pods Pending.
+
+```sh
+export INFRA_ID=$(oc get -o jsonpath='{.status.infrastructureName}' infrastructure cluster)
+export AMI=$(oc get machineset -n openshift-machine-api -o jsonpath='{.items[0].spec.template.spec.providerSpec.value.ami.id}')
+export SUBNET_NAME=$(oc get machineset -n openshift-machine-api -o jsonpath='{.items[0].spec.template.spec.providerSpec.value.subnet.filters[0].values[0]}')
+export REGION=$(oc get machineset -n openshift-machine-api -o jsonpath='{.items[0].spec.template.spec.providerSpec.value.placement.region}')
+export AZ=$(oc get machineset -n openshift-machine-api -o jsonpath='{.items[0].spec.template.spec.providerSpec.value.placement.availabilityZone}')
+export INSTANCE_TYPE=m6i.4xlarge
+export MS_NAME=${INFRA_ID}-cpu-${AZ}
+export IAM_PROFILE=${INFRA_ID}-worker-profile
+export SG=${INFRA_ID}-node
+
+envsubst < manifests/00-disconnected/cpu-machineset.yaml | oc apply -f -
+```
+
+> [!NOTE]
+> On IPI-installed AWS clusters the worker MachineSet references its subnet by tag filter, not by ID, which is why `SUBNET_NAME` reads the filter value. If `oc get machineset ... subnet.filters[0].values[0]` returns nothing, your cluster pins an explicit subnet ID instead - edit the template's `subnet` block to use `id: <subnet-id>`.
+
+The node comes up labelled `node-role.kubernetes.io/cpu-inference`. `m6i.2xlarge` (8 vCPU / 32 GiB) is the minimum for `qwen3-06b`; `m6i.4xlarge` (16 vCPU / 64 GiB) leaves room for platform pods as well.
 
 ## GPU setup (optional)
 
@@ -282,7 +309,7 @@ A template is provided at `manifests/00-disconnected/gpu-machineset.yaml`. Befor
 ```sh
 export INFRA_ID=$(oc get -o jsonpath='{.status.infrastructureName}' infrastructure cluster)
 export AMI=$(oc get machineset -n openshift-machine-api -o jsonpath='{.items[0].spec.template.spec.providerSpec.value.ami.id}')
-export SUBNET=$(oc get machineset -n openshift-machine-api -o jsonpath='{.items[0].spec.template.spec.providerSpec.value.subnet.id}')
+export SUBNET_NAME=$(oc get machineset -n openshift-machine-api -o jsonpath='{.items[0].spec.template.spec.providerSpec.value.subnet.filters[0].values[0]}')
 export REGION=$(oc get machineset -n openshift-machine-api -o jsonpath='{.items[0].spec.template.spec.providerSpec.value.placement.region}')
 export AZ=$(oc get machineset -n openshift-machine-api -o jsonpath='{.items[0].spec.template.spec.providerSpec.value.placement.availabilityZone}')
 export INSTANCE_TYPE=g6.2xlarge
@@ -292,6 +319,9 @@ export SG=${INFRA_ID}-node
 
 envsubst < manifests/00-disconnected/gpu-machineset.yaml | oc apply -f -
 ```
+
+> [!NOTE]
+> On IPI-installed AWS clusters the worker MachineSet references its subnet by tag filter, not by ID, which is why `SUBNET_NAME` reads the filter value. If `oc get machineset ... subnet.filters[0].values[0]` returns nothing, your cluster pins an explicit subnet ID instead - edit the template's `subnet` block to use `id: <subnet-id>`.
 
 Wait for the GPU node to be Ready:
 

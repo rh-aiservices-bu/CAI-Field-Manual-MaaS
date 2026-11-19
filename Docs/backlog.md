@@ -13,6 +13,7 @@ Working list of pending work for this repo. New items go at the bottom of their 
 | # | Item | Status | Notes |
 |---|------|--------|-------|
 | 1 | Pages: live — site created via admin API and deploys verified from `migrate-maas-guide` (2026-11-02); workflow triggers on branch pushes and `workflow_dispatch` | done | one-time admin acts: site creation + `github-pages` deployment-branch policy grant (cleanup in Later) |
+| 2 | Sync vendored guide content + code with rhoai-maas-guide f090e3f (6 upstream commits, 2026-11-04) | done | content page openshift5 + 11 verbatim code files |
 
 ## Later
 
