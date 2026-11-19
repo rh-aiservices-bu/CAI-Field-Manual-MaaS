@@ -12,7 +12,7 @@ languages:
     label: English
     locale: en-US
     weight: 1
-    title: CAI Field Manual for MaaS
+    title: CAI Field Manual
     params:
       description: Documentation, updates, and manuals for your project.
   # Keep disabled languages declared so Hugo recognizes .zh.md and .fr.md as
