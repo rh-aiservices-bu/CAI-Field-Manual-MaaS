@@ -1,7 +1,7 @@
 ---
 title: CAI Field Manual for MaaS
 description: Deploy RHOAI 3.4/3.5 Models-as-a-Service on OpenShift 4.19+ — Kustomize manifests with status gates and a single automation script.
-linkTitle: Guide
+linkTitle: MaaS (Models-as-a-Service)
 icon: fa-solid fa-book-open
 outputs: [HTML, RSS, print, markdown, LLMSFULL]
 cascade:
