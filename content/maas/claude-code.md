@@ -115,7 +115,7 @@ The skill logs into the cluster, detects its characteristics (platform, GPU, nod
 
 Phase 3 blind-spot checks cover regressions that the standard `verify.sh` does not test: gateway memory limits, MetalLB IP collisions, OAuth/console accessibility, RHOAI dashboard reachability, namespace labels, RHCL operator version, HuggingFace Xet storage behavior, and an independent inference request.
 
-Phase 4 validates that specific commands from the guide pages (`05-maas-models.adoc`, `04-rhoai-config.adoc`, `06-verification.adoc`, `01-prerequisites.adoc`) return the documented output.
+Phase 4 validates that specific commands from the guide pages (`model-deployment/maas-models`, `installation-guide/rhoai-config`, `model-deployment/verification`, `installation-guide/prerequisites`) return the documented output.
 
 At the end, the skill prints a structured report with all results, operator versions, and any issues found.
 
